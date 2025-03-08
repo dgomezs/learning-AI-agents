@@ -90,6 +90,28 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Profile and optimize critical code paths
 - Optimize Kafka topic partitioning for parallel processing
 
+## Database Migration Strategy
+- Use Liquibase for database schema evolution and versioning
+- Store changelog files in a dedicated directory structure:
+  - `src/main/resources/db/changelog/` for main changelog files
+  - Use semantic versioning for changelog files (e.g., `v1.0.0.xml`, `v1.1.0.xml`)
+- Organize changes by type and entity:
+  - `db/changelog/changes/tables/` - Table creation and modifications
+  - `db/changelog/changes/sequences/` - Sequence definitions
+  - `db/changelog/changes/data/` - Reference/seed data
+  - `db/changelog/changes/constraints/` - Foreign keys and constraints
+  - `db/changelog/changes/indexes/` - Index creation
+- Follow naming conventions:
+  - `YYYYMMDDHHMMSS_short-description.xml` for change files
+- Include descriptive comments for each changeset
+- Implement rollback procedures for all changes
+- Test migrations in CI pipeline using an in-memory database
+- Separate DDL (Data Definition Language) from DML (Data Manipulation Language)
+- Run migrations automatically during application startup in development
+- Use controlled migration execution in production environments
+- Include database versioning checks during application startup
+- Generate database documentation from Liquibase changesets
+
 ## Dependency Management & Tooling
 - Use Maven BOM (Bill of Materials) to ensure consistent dependency versions.
 - Favor library versions that align with LTS support.
