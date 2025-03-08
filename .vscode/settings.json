@@ -16,7 +16,7 @@
     },
     "github.copilot.chat.codeGeneration.instructions": [
         {
-            "file": "docs/project-structure.md",
+            "file": "docs/coding-guidelines.md",
         }, {
             "file": "docs/product-catalog-service-spec.md",
         },{
