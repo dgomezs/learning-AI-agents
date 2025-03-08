@@ -1,14 +1,26 @@
-# Project Documentation
+# E-Commerce Platform Documentation
 
 ## Overview
-This project is a sample project to demonstrate the use of GitHub Copilot within a Java-based monorepo containing multiple microservices.
+This project is an e-commerce platform built within a Java-based monorepo containing multiple microservices. It demonstrates the use of GitHub Copilot for developing a complex, real-world application.
+
+## Functionality
+The platform provides the following key features:
+
+- **Product Management**: Browse and search for products with advanced filtering
+- **Shopping Cart**: Add products to cart, modify quantities, and save for later
+- **User Accounts**: Register, login, and manage user profiles
+- **Checkout Process**: Multi-step checkout with address validation
+- **Payment Processing**: Secure credit card payment integration
+- **Order Management**: Track orders and view order history
+- **Inventory Management**: Real-time inventory tracking
 
 ## Getting Started
 To get started with this project, follow these steps:
 
 1. Clone the repository.
 2. Install dependencies.
-3. Run the application.
+3. Configure the environment variables.
+4. Run the application.
 
 ## Documentation Structure
 The `docs` folder contains important reference materials and guidelines for the project:
@@ -25,9 +37,17 @@ This project is configured to maximize GitHub Copilot's effectiveness:
 3. Example prompts in `prompts.md` can help you get the most out of Copilot.
 
 ## Project Architecture
-The project follows clean architecture principles with CQRS pattern implementation, as detailed in the `project.md` file. It uses an API-first design approach with OpenAPI specifications and event-driven architecture with Kafka.
+The platform follows clean architecture principles with CQRS pattern implementation, as detailed in the `project.md` file. It uses an API-first design approach with OpenAPI specifications and event-driven architecture with Kafka.
 
-## Features
+### Microservices
+- **Product Service**: Manages product catalog and inventory
+- **User Service**: Handles user authentication and profile management
+- **Cart Service**: Manages shopping cart operations
+- **Order Service**: Processes orders and manages order lifecycle
+- **Payment Service**: Handles payment processing and integration with payment gateways
+- **Search Service**: Provides product search functionality
+
+## Technical Features
 - Monorepo structure with multiple services
 - Clean architecture with CQRS
 - API-first design using OpenAPI
