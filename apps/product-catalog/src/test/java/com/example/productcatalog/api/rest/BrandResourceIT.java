@@ -7,7 +7,6 @@ import com.example.productcatalog.infrastructure.persistence.BrandRepository;
 import com.example.productcatalog.test.containers.PostgresTestContainer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +28,6 @@ public class BrandResourceIT {
 
     @Test
     @DisplayName("Should create brand and persist to database")
-    @TestSecurity(user = "product-manager", roles = {"product-manager"})
     public void shouldCreateAndPersistBrand() {
         // Arrange
         CreateBrandRequest request = new CreateBrandRequest(

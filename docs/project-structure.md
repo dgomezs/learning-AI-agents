@@ -76,169 +76,161 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Test Kafka producers and consumers using test containers
 - Aim for at least 80% code coverage
 
-## Security Considerationsion
+## Security Considerations
 - Implement proper input validation
-- Use parameterized queries to prevent SQL injectionng of external dependencies
-- Apply authentication and authorization where necessaryostgreSQL for closer production parity
-- Protect sensitive datansion model for container lifecycle management
-- Implement API security as defined in OpenAPI specs (OAuth2, API keys, etc.)
-- Configure shared container instances for the entire test suite when appropriate
-## Performance Guidelinesest containers for:
-- Optimize database queriesting
-- Implement caching where appropriatent-driven components
+- Use parameterized queries to prevent SQL injection
+- Protect sensitive data through proper handling and encryption
+- Implement request rate limiting to prevent DoS attacks
+
+## Performance Guidelines
+- Optimize database queries
+- Implement caching where appropriate
 - Consider asynchronous processing for long-running tasks
 - Profile and optimize critical code paths
 - Optimize Kafka topic partitioning for parallel processing
-  - Any other external dependencies
+
 ## Database Migration Strategy
 - Use Liquibase for database schema evolution and versioning
-- Store changelog files in a dedicated directory structure:ing production
-  - `src/main/resources/db/changelog/` for main changelog filesrtup
+- Store changelog files in a dedicated directory structure:
+  - `src/main/resources/db/changelog/` for main changelog files
   - Use semantic versioning for changelog files (e.g., `v1.0.0.xml`, `v1.1.0.xml`)
-- Organize changes by type and entity:e database readiness before tests
-  - `db/changelog/changes/tables/` - Table creation and modificationsce
-  - `db/changelog/changes/sequences/` - Sequence definitionsk or table truncation)
+- Organize changes by type and entity:
+  - `db/changelog/changes/tables/` - Table creation and modifications
+  - `db/changelog/changes/sequences/` - Sequence definitions
   - `db/changelog/changes/data/` - Reference/seed data
   - `db/changelog/changes/constraints/` - Foreign keys and constraints
-  - `db/changelog/changes/indexes/` - Index creationr, Schema Registry)
-- Follow naming conventions:lpers for topic creation and event verification
-  - `YYYYMMDDHHMMSS_short-description.xml` for change filesess
-- Include descriptive comments for each changesetidation
-- Implement rollback procedures for all changeswith actual Avro schemas
-- Test migrations in CI pipeline using an in-memory databasencompatibility)
+  - `db/changelog/changes/indexes/` - Index creation
+- Follow naming conventions:
+  - `YYYYMMDDHHMMSS_short-description.xml` for change files
+- Include descriptive comments for each changeset
+- Implement rollback procedures for all changes
+- Test migrations in CI pipeline
 - Separate DDL (Data Definition Language) from DML (Data Manipulation Language)
 - Run migrations automatically during application startup in development
 - Use controlled migration execution in production environments
 - Include database versioning checks during application startup
 - Generate database documentation from Liquibase changesets
-- Use container networks for multi-container tests
-## Dependency Management & Toolingration for debugging
-- Use Maven BOM (Bill of Materials) to ensure consistent dependency versions.
-- Favor library versions that align with LTS support.limits, cleanup policies)
-- Scan dependencies for vulnerabilities (e.g., OWASP Dependency Check).
+
+## Dependency Management & Tooling
+- Use Maven BOM (Bill of Materials) to ensure consistent dependency versions
+- Favor library versions that align with LTS support
+- Scan dependencies for vulnerabilities (e.g., OWASP Dependency Check)
 - The root pom should contain the versions of the libraries used by the apps and libs
-- Ensure builds pass with `mvn verify` before pushing changes.
-- Define container classes in `src/test/java/<package>/test/containers/` 
-## Observability Stackt utilities for container interaction in `libs/test-utils`
+- Ensure builds pass with `mvn verify` before pushing changes
+- Define container classes in `src/test/java/<package>/test/containers/`
+
+## Observability Stack
 - Implement the three pillars of observability: logs, metrics, and traces
-- Use OpenTelemetry as the vendor-agnostic observability frameworkios
+- Use OpenTelemetry as the vendor-agnostic observability framework
 - Export telemetry data to your preferred backends (Jaeger, Prometheus, Elasticsearch, etc.)
 - Follow W3C trace context specification for consistent cross-service tracing
-- Implement proper input validation
-## Loggingmeterized queries to prevent SQL injection
+
+## Logging
 - Use structured logging with JSON format (Logback + SLF4J)
 - Set appropriate log levels (`DEBUG`, `INFO`, `WARN`, `ERROR`)
-- Include trace and span IDs in log entries for correlation2, API keys, etc.)
+- Include trace and span IDs in log entries for correlation
 - Centralize logs in a searchable platform (e.g., Elasticsearch)
-## Performance Guidelines
+
 ## Tracing & Metrics with OpenTelemetry
 - Implement distributed tracing across all services
-- Configure OpenTelemetry SDK in each serviceunning tasks
+- Configure OpenTelemetry SDK in each service
 - Automatically instrument frameworks and libraries where possible
 - Add custom instrumentation for business-critical operations
 - Create custom spans for important business transactions
 - Define and collect custom metrics for business KPIs
-- Expose Prometheus endpoint in each servicen and versioning
+- Expose Prometheus endpoint in each service
 - Track the four golden signals: latency, traffic, errors, and saturation
-- Set up dashboards for visualizing metrics and traceslog files
-  - Use semantic versioning for changelog files (e.g., `v1.0.0.xml`, `v1.1.0.xml`)
-## Error Handling & Resilience entity:
-- Define a global exception handling strategyeation and modifications
-- Use retry mechanisms for transient failuresnce definitions
+- Set up dashboards for visualizing metrics and traces
+
+## Error Handling & Resilience
+- Define a global exception handling strategy
+- Use retry mechanisms for transient failures
 - Implement graceful degradation (e.g., circuit breakers with Resilience4j)
-- Set up alerts based on error rates and SLOseign keys and constraints
-  - `db/changelog/changes/indexes/` - Index creation
-## Contract Testingventions:
-- Implement consumer-driven contract testing using Pactiles
+- Set up alerts based on error rates and SLOs
+
+## Contract Testing
+- Implement consumer-driven contract testing using Pact
 - Derive contracts from OpenAPI specifications to ensure alignment
 - Each service maintains contracts for dependencies it consumes
-- Provider services verify they meet consumer expectationsse
-- Separate DDL (Data Definition Language) from DML (Data Manipulation Language)
-### Consumer-Side Contract Testinging application startup in development
+- Provider services verify they meet consumer expectations
+
+### Consumer-Side Contract Testing
 - Define Pact contracts in consumer tests based on expected provider behavior
-- Map OpenAPI schemas to Pact interactions for consistencyartup
-- Generate Pact files during consumer test executionngesets
+- Map OpenAPI schemas to Pact interactions for consistency
+- Generate Pact files during consumer test execution
 - Publish Pact contracts to Pact Broker for sharing with providers
 - Organize contract tests in `src/test/java/<package>/contracts/consumer` directory
-- Use Maven BOM (Bill of Materials) to ensure consistent dependency versions.
-### Provider-Side Contract Testingn with LTS support.
-- Verify provider compliance with published Pact contractsdency Check).
-- Use provider state handlers to set up test data for scenariosd by the apps and libs
-- Implement automated contract verification in CI pipelineges.
-- Block releases when contracts are broken
+
+### Provider-Side Contract Testing
+- Verify provider compliance with published Pact contracts
+- Use provider state handlers to set up test data for scenarios
+- Implement automated contract verification in CI pipeline
 - Organize provider verification tests in `src/test/java/<package>/contracts/provider` directory
-- Implement the three pillars of observability: logs, metrics, and traces
-### Pact Workflow Integrationndor-agnostic observability framework
-- Export telemetry data to your preferred backends (Jaeger, Prometheus, Elasticsearch, etc.)
-- Implement contract testing as part of automated test suites-service tracing
-- Tag verified contracts with version and environment information
-- Establish matrix of compatibility between service versions
-- Use structured logging with JSON format (Logback + SLF4J)
-### Contract Testing GuidelinesDEBUG`, `INFO`, `WARN`, `ERROR`)
-- Focus on API boundaries and service interfacescorrelation
-- Keep contracts focused on format rather than business logicch)
+
+### Contract Testing Guidelines
+- Focus on API boundaries and service interfaces
+- Keep contracts focused on format rather than business logic
 - Use provider states to set up test scenarios
 - Implement version tagging for contract evolution
 - Document breaking changes and provide migration paths
-- Configure OpenTelemetry SDK in each service
-## Event-Driven Architecture with AsyncAPIlibraries where possible
-- Define all event interfaces using AsyncAPI specificationsns
+
+## Event-Driven Architecture with AsyncAPI
+- Define all event interfaces using AsyncAPI specifications
 - Store AsyncAPI specifications in the `api/events` folder for each service
 - Generate Kafka producers and consumers from AsyncAPI specs
-- Validate events against AsyncAPI schemasce
-- Use Avro for message serialization with schema registry, and saturation
+- Validate events against AsyncAPI schemas
+- Use Avro for message serialization with schema registry
 - Implement event versioning and compatibility strategy
 - Document event payload structures and semantics
 - Establish event ownership and responsibility boundaries
 - Define a global exception handling strategy
-## Example Service Structureransient failures
-- Implement graceful degradation (e.g., circuit breakers with Resilience4j)
-```et up alerts based on error rates and SLOs
+
+## Example Service Structure
 apps/
-├── service-a/sting
-│   ├── api/consumer-driven contract testing using Pact
-│   │   ├── rest/s from OpenAPI specifications to ensure alignment
-│   │   │   └── openapi.yamltracts for dependencies it consumes
-│   │   └── events/ verify they meet consumer expectations
+├── service-a/
+│   ├── api/
+│   │   ├── rest/
+│   │   │   └── openapi.yaml
+│   │   └── events/
 │   │       └── asyncapi.yaml
-│   ├── src/-Side Contract Testing
-│   │   ├── main/tracts in consumer tests based on expected provider behavior
-│   │   │   ├── java/ to Pact interactions for consistency
-│   │   │   │   └── com/example/servicea/t execution
-│   │   │   │       ├── api/Pact Broker for sharing with providers
-│   │   │   │       │   ├── rest//test/java/<package>/contracts/consumer` directory
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── com/example/servicea/
+│   │   │   │       ├── api/
+│   │   │   │       │   ├── rest/
 │   │   │   │       │   └── events/
 │   │   │   │       │       ├── producers/
-│   │   │   │       │       └── consumers/d Pact contracts
-│   │   │   │       ├── application/ up test data for scenarios
-│   │   │   │       │   └── usecases/cation in CI pipeline
+│   │   │   │       │       └── consumers/
+│   │   │   │       ├── application/
+│   │   │   │       │   └── usecases/
 │   │   │   │       │       ├── CreateUserCommand.java
-│   │   │   │       │       ├── UpdateUserCommand.javava/<package>/contracts/provider` directory
+│   │   │   │       │       ├── UpdateUserCommand.java
 │   │   │   │       │       ├── GetUserByIdQuery.java
 │   │   │   │       │       └── ListUsersQuery.java
 │   │   │   │       ├── domain/
-│   │   │   │       │   ├── model/rt of automated test suite
-│   │   │   │       │   ├── events/on and environment information
-│   │   │   │       │   └── services/etween service versions
+│   │   │   │       │   ├── model/
+│   │   │   │       │   ├── events/
+│   │   │   │       │   └── services/
 │   │   │   │       ├── infrastructure/
 │   │   │   │       │   ├── config/
 │   │   │   │       │   │   ├── OpenTelemetryConfig.java
-│   │   │   │       │   │   └── KafkaConfig.javausiness logic
-│   │   │   │       │   ├── persistence/narios
-│   │   │   │       │   ├── kafka/ntract evolution
-│   │   │   │       │   │   ├── producers/gration paths
+│   │   │   │       │   │   └── KafkaConfig.java
+│   │   │   │       │   ├── persistence/
+│   │   │   │       │   ├── kafka/
+│   │   │   │       │   │   ├── producers/
 │   │   │   │       │   │   └── consumers/
-│   │   │   │       │   ├── external/ncAPI
-│   │   │   │       │   └── observability/PI specifications
-│   │   │   │       │       ├── CustomMetrics.java` folder for each service
-│   │   │   │       │       ├── TracingAspect.javacAPI specs
+│   │   │   │       │   ├── external/
+│   │   │   │       │   └── observability/
+│   │   │   │       │       ├── CustomMetrics.java
+│   │   │   │       │       ├── TracingAspect.java
 │   │   │   │       │       └── MetricsService.java
-│   │   │   └── resources/ialization with schema registry
-│   │   │       ├── application.propertieslity strategy
-│   │   │       ├── otel-collector-config.yamlics
-│   │   │       └── avro/ip and responsibility boundaries
-│   │   │           └── user-events.avsc
-│   │   └── test/e Structure
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── otel-collector-config.yaml
+│   │       └── avro/
+│   │           └── user-events.avsc
+│   │   └── test/
 │   │       └── java/
 │   │           └── com/example/servicea/
 │   │               ├── usecases/
@@ -254,60 +246,13 @@ apps/
 │   │               │   │       ├── producers/
 │   │               │   │       └── consumers/
 │   │               │   └── external/
-│   │               └── contracts//
-│   │                   ├── consumer/cers/
+│   │               └── contracts/
+│   │                   ├── consumer/
 │   │                   │   ├── ServiceBContractTest.java
 │   │                   │   └── ServiceCContractTest.java
 │   │                   ├── provider/
 │   │                   │   ├── ProviderStateHandler.java
 │   │                   │   ├── ServiceAContractVerificationTest.java
-│   │                   │   └── pact-verifier.properties
-│   │                   └── schemas/UsersQuery.java
-│   │                       ├── openapi-to-pact-mappings.json
-│   │                       └── asyncapi-to-pact-mappings.json
-│   ├── pact/       │   ├── events/
-│   │   ├── consumer/   └── services/
-│   │   │   └── service-a-service-b.json
-│   │   └── provider/   ├── config/
-│   │       └── service-c-service-a.jsonmetryConfig.java
-│   └── pom.xml     │   │   └── KafkaConfig.java
-├── service-b/      │   ├── persistence/
-│   └── ... │       │   ├── kafka/
-└── service-c/      │   │   ├── producers/
-    └── ... │       │   │   └── consumers/
-libs/   │   │       │   ├── external/
-├── common/ │       │   └── observability/
-├── api-clients/    │       ├── CustomMetrics.java
-│   ├── rest/       │       ├── TracingAspect.java
-│   └── events/     │       └── MetricsService.java
-├── shared-model/esources/
-├── contract-testing/pplication.properties
-│   ├── openapi-pact-generator/tor-config.yaml
-│   ├── asyncapi-pact-generator/
-│   └── contract-test-utils/-events.avsc
-└── asyncapi-tools/
-    ├── generators/a/
-    └── validators/ com/example/servicea/
-config/             ├── usecases/
-├── shared-config/  │   ├── CreateUserCommandTest.java
-├── kafka/          │   ├── UpdateUserCommandTest.java
-│   ├── topics.yaml │   ├── GetUserByIdQueryTest.java
-│   └── schema-registry.yamlListUsersQueryTest.java
-├── pact/           ├── adapters/
-│   ├── broker-config.yml── persistence/
-│   └── verification-rules.json/
-└── asyncapi/       │   │   ├── rest/
-    └── common-message-library.yamlnts/
-``` │               │   │       ├── producers/
-│   │               │   │       └── consumers/
-## OpenTelemetry Setup for Servicesl/
-│   │               └── contracts/
-Each service should include the following OpenTelemetry components:
-│   │                   │   ├── ServiceBContractTest.java
-│   │                   │   └── ServiceCContractTest.java
-   - OpenTelemetry API and SDKovider/
-   - Auto-instrumentation agents for:derStateHandler.java
-     - Web frameworks (JAX-RS, Servlet)AContractVerificationTest.java
 │   │                   │   └── pact-verifier.properties
 │   │                   └── schemas/
 │   │                       ├── openapi-to-pact-mappings.json
@@ -327,7 +272,6 @@ libs/
 ├── api-clients/
 │   ├── rest/
 │   └── events/
-   - Correlation IDs in logs linked to trace IDs
 ├── contract-testing/
 │   ├── openapi-pact-generator/
 │   ├── asyncapi-pact-generator/
@@ -336,105 +280,12 @@ libs/
     ├── generators/
     └── validators/
 config/
-   - Provider verification tests in `src/test/java/<package>/contracts/provider`
-   - Schema mappings in `src/test/java/<package>/contracts/schemas`
-   - Generated Pact files in the `pact` directory at the service root
+├── shared-config/
+├── kafka/
+│   ├── topics.yaml
 │   └── schema-registry.yaml
-2. **Consumer-Side Components**:
-   - Contract test classes for each provider the service depends on
+├── pact/
+│   ├── broker-config.yml
 │   └── verification-rules.json
-   - Utility classes for setting up contract test expectations
+└── asyncapi/
     └── common-message-library.yaml
-3. **Provider-Side Components**:
-   - Provider state handlers to set up test scenarios
-   - Contract verification test configurations
-   - Provider verification properties
-Each service should include the following OpenTelemetry components:
-4. **Shared Contract Testing Utilities**:
-   - Common utilities in `libs/contract-testing/contract-test-utils`
-   - OpenAPI to Pact converter in `libs/contract-testing/openapi-pact-generator`
-   - Centralized Pact Broker configuration in `config/pact`
-     - Web frameworks (JAX-RS, Servlet)
-5. **Integration with CI/CD**:
-   - Contract verification as part of the build pipeline
-   - Pact Broker integration for storing and retrieving contracts
-   - "Can-I-deploy" checks before service deployment
-2. **Configuration**:
-## AsyncAPI Setup for Event-Driven Interfaces and exporter configuration
-   - Environment-specific settings in application properties
-Each service should include the following AsyncAPI components:
-3. **Custom Instrumentation**:
-1. **AsyncAPI Specifications**:OP-based method tracing
-   - AsyncAPI YAML files in the `api/events` directorys
-   - Define all events produced and consumed by the serviceon
-   - Include message schemas, channels, and operation bindings
-   - Use semantic versioning for API evolution
-   - `otel-collector-config.yaml` defining receivers, processors, and exporters
-2. **Code Generation**: for sidecar or centralized collector
-   - Generate Kafka producers and consumers from AsyncAPI specs
-   - Create DTOs for event payloads
-   - Generate validation code for messagesice boundaries
-   - Correlation IDs in logs linked to trace IDs
-3. **Event Structure**:sing telemetry status
-   - Define clear event naming conventions
-   - Include metadata in all events (timestamp, source, correlation IDs)
-   - Link event schemas to Avro schemas in schema registry
-   - Implement event versioning strategyg contract testing components:
-
-4. **Testing Event Interfaces**:*:
-   - Write tests for event producers and consumersckage>/contracts/consumer`
-   - Validate events against AsyncAPI schemas/java/<package>/contracts/provider`
-   - Use Testcontainers for Kafka and schema registry testinghemas`
-   - Implement contract tests for event interfacesat the service root
-
-5. **Integration with OpenTelemetry**:
-   - Add trace context to event headersvider the service depends on
-   - Implement distributed tracing across event producers and consumers
-   - Monitor Kafka metrics through OpenTelemetryt expectations
-
-3. **Provider-Side Components**:
-   - Provider state handlers to set up test scenarios
-   - Contract verification test configurations
-   - Provider verification properties
-
-4. **Shared Contract Testing Utilities**:
-   - Common utilities in `libs/contract-testing/contract-test-utils`
-   - OpenAPI to Pact converter in `libs/contract-testing/openapi-pact-generator`
-   - Centralized Pact Broker configuration in `config/pact`
-
-5. **Integration with CI/CD**:
-   - Contract verification as part of the build pipeline
-   - Pact Broker integration for storing and retrieving contracts
-   - "Can-I-deploy" checks before service deployment
-
-## AsyncAPI Setup for Event-Driven Interfaces
-
-Each service should include the following AsyncAPI components:
-
-1. **AsyncAPI Specifications**:
-   - AsyncAPI YAML files in the `api/events` directory
-   - Define all events produced and consumed by the service
-   - Include message schemas, channels, and operation bindings
-   - Use semantic versioning for API evolution
-
-2. **Code Generation**:
-   - Generate Kafka producers and consumers from AsyncAPI specs
-   - Create DTOs for event payloads
-   - Generate validation code for messages
-
-3. **Event Structure**:
-   - Define clear event naming conventions
-   - Include metadata in all events (timestamp, source, correlation IDs)
-   - Link event schemas to Avro schemas in schema registry
-   - Implement event versioning strategy
-
-4. **Testing Event Interfaces**:
-   - Write tests for event producers and consumers
-   - Validate events against AsyncAPI schemas
-   - Use Testcontainers for Kafka and schema registry testing
-   - Implement contract tests for event interfaces
-
-5. **Integration with OpenTelemetry**:
-   - Add trace context to event headers
-   - Implement distributed tracing across event producers and consumers
-   - Monitor Kafka metrics through OpenTelemetry

@@ -3,7 +3,6 @@ package com.example.productcatalog.api.rest;
 import com.example.productcatalog.api.rest.dto.BrandResponse;
 import com.example.productcatalog.api.rest.dto.CreateBrandRequest;
 import com.example.productcatalog.application.usecases.CreateBrandCommand;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -22,7 +21,6 @@ public class BrandResource {
     private final CreateBrandCommand createBrandCommand;
 
     @POST
-    @RolesAllowed("product-manager")
     public Response createBrand(@Valid CreateBrandRequest request) {
         CreateBrandCommand.Input input = new CreateBrandCommand.Input(
                 request.getName(),
