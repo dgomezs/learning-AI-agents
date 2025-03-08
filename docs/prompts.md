@@ -1,23 +1,27 @@
 # Example Prompts for GitHub Copilot
 
 ## General
-- Generate a README.md file for a new project.
-- Write a shell script to automate the setup of a development environment.
-- Initiate options to provide more context to GitHub Copilot.
+- Generate a comprehensive README.md file for a new project.
+- Create a shell script to automate development environment setup.
+- Provide additional context to help GitHub Copilot generate more accurate code.
 
-## Copilot instructions
+## Copilot Instructions
 
-- Add me a project.md file in the docs. This file will be used to help copilot with code generation instructions.
-- This project is going to be a monorepo. It will contain multiple services in the apps folder. Each service will be structured using clean architecture and will separate clearly commands and queries. The test structure will separate Use cases that contain the application logic and Adapters that aim to interact with boundaries outside the process. Update the project instructions based on this information.
-- Don't make the use of commands and queries explicit in the folders. We can place those in the use cases directory.
-- Update the project definition so that it will use Kafka and API-first design using OpenAPI specs.
+- Create a project.md file in the docs directory to establish code generation guidelines for Copilot.
+- Structure this project as a monorepo with multiple services in the apps folder. Implement clean architecture for each service with clear separation of commands and queries. For testing, separate the Use Cases (containing application logic) from Adapters (handling external interactions). 
+- Place both commands and queries within the use cases directory rather than creating separate folders for each.
+- Implement Kafka for event-driven communication between services and follow API-first design with OpenAPI specifications.
 
-## README
+## README Improvements
 
-- Update the README file explaining the docs folder and the files in it.
-- Update the README explaining that this project represents an e-commerce website. Users can search for products, add products to their basket and then checkout the products paying with their credit card.
+- Enhance the README file with detailed explanations of the docs folder structure and its contents.
+- Update the README to describe this project as an e-commerce platform where users can search for products, add items to their shopping basket, and complete checkout using credit card payments.
 
+## Business Logic Services
 
-## Others
-- Add to gitgnore the setup for a java project using maven
+- Create a comprehensive specification document in the docs folder detailing the Product Catalog Service requirements and functionality.
+
+## Project Setup
+
+- Add appropriate entries to .gitignore for a Java project using Maven build system.
 

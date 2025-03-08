@@ -17,6 +17,8 @@
     "github.copilot.chat.codeGeneration.instructions": [
         {
             "file": "docs/project-structure.md",
+            "file": "docs/product-catalog-service-spec.md",
+               
         }
     ],
     "github.copilot.chat.commitMessageGeneration.instructions": [
