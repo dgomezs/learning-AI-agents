@@ -2,9 +2,9 @@ package com.example.catalog.adapters.persistence;
 
 import com.example.catalog.domain.model.Brand;
 import com.example.catalog.infrastructure.persistence.BrandRepository;
+import com.example.catalog.test.containers.PostgresTestContainer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
-@QuarkusTestResource(H2DatabaseTestResource.class)
+@QuarkusTestResource(PostgresTestContainer.class)
 public class BrandRepositoryIT {
 
     @Inject
