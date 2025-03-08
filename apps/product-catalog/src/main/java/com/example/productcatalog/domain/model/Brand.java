@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -38,5 +39,5 @@ public class Brand extends PanacheEntityBase {
     private Instant createdAt;
     private Instant updatedAt;
 
-   
+
 }

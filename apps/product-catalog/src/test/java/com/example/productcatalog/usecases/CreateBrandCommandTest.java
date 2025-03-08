@@ -3,7 +3,7 @@ package com.example.productcatalog.usecases;
 import com.example.productcatalog.domain.model.Brand;
 import com.example.productcatalog.infrastructure.events.EventPublisher;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
-
+import com.example.productcatalog.domain.events.BrandCreatedEvent;
 
 import com.example.productcatalog.application.usecases.CreateBrandCommand;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ class CreateBrandCommandTest {
     }
 
     @Test
-    void shouldCreateBrand() throws URISyntaxException{
+    void shouldCreateBrand() throws URISyntaxException {
         // Given
         CreateBrandCommand.Input input = new CreateBrandCommand.Input(
             "SportMaster",
@@ -42,30 +42,39 @@ class CreateBrandCommandTest {
             new URI("sportmaster-logo.png")
         );
 
-        Brand brand = Brand.builder()
+        Brand expectedBrand = Brand.builder()
             .name(input.getName())
             .description(input.getDescription())
             .website(input.getWebsite())
             .logo(input.getLogoUrl())
             .build();
 
-    
-
-
+        when(brandRepository.persist(any(Brand.class))).thenReturn(expectedBrand);
 
         // When
         CreateBrandCommand.Output output = createBrandCommand.execute(input);
 
         // Then
         assertNotNull(output);
-        assertEquals(brand.getId(), output.getId());
-        assertEquals(brand.getName(), output.getName());
-        assertEquals(brand.getDescription(), output.getDescription());
-        assertEquals(brand.getWebsite(), output.getWebsite());
-        assertEquals(brand.getLogo(), output.getLogoUrl());
+        assertEquals(expectedBrand.getId(), output.getId());
+        assertEquals(expectedBrand.getName(), output.getName());
+        assertEquals(expectedBrand.getDescription(), output.getDescription());
+        assertEquals(expectedBrand.getWebsite(), output.getWebsite());
+        assertEquals(expectedBrand.getLogo(), output.getLogoUrl());
 
-        verify(brandRepository, times(1)).persist(brand);
-        verify(eventPublisher, times(1)).publish(any());
+        verify(brandRepository, times(1)).persist(argThat(brand -> 
+            brand.getName().equals(input.getName()) &&
+            brand.getDescription().equals(input.getDescription()) &&
+            brand.getWebsite().equals(input.getWebsite()) &&
+            brand.getLogo().equals(input.getLogoUrl())
+        ));
+
+        verify(eventPublisher, times(1)).publish(argThat((BrandCreatedEvent event) -> 
+            event.getName().equals(expectedBrand.getName()) &&
+            event.getDescription().equals(expectedBrand.getDescription()) &&
+            event.getWebsite().equals(expectedBrand.getWebsite().toString()) && 
+            event.getLogoUrl().equals(expectedBrand.getLogo().toString())
+        ));
     }
     
 

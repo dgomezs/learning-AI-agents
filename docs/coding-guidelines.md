@@ -181,6 +181,84 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - For unit tests follow naming convention: [Class][Test] (e.g., CreateBrandCommandTest)
 - For integration tests follow naming convention: [Class][IT] (e.g., BrandRepositoryIT)
 
+### Mock Verification Best Practices
+
+1. **Complete Argument Verification:**
+   - Always verify all fields/properties of objects passed to mocked methods
+   - Use `argThat` with explicit type casting for better type safety
+   - Compare every field that is relevant to the business logic
+
+```java
+// ❌ Incomplete verification
+verify(eventPublisher).publish(argThat(event -> 
+    event.getId().equals(expectedId)
+));
+
+// ✅ Complete verification
+verify(eventPublisher).publish(argThat((SomeEvent event) -> 
+    event.getId().equals(expectedId) &&
+    event.getName().equals(expectedName) &&
+    event.getTimestamp().equals(expectedTimestamp) &&
+    event.getDetails().equals(expectedDetails)
+));
+```
+
+2. **Custom Matchers:**
+   - Create dedicated argument matchers for complex objects
+   - Put matchers in a separate class under `test/java/matchers`
+   - Name matcher classes with suffix `Matcher`
+
+```java
+public class BrandCreatedEventMatcher implements ArgumentMatcher<BrandCreatedEvent> {
+    private final Brand expectedBrand;
+
+    public BrandCreatedEventMatcher(Brand expectedBrand) {
+        this.expectedBrand = expectedBrand;
+    }
+
+    @Override
+    public boolean matches(BrandCreatedEvent event) {
+        return event.getBrandId().equals(expectedBrand.getId()) &&
+               event.getName().equals(expectedBrand.getName()) &&
+               event.getDescription().equals(expectedBrand.getDescription());
+    }
+}
+
+// Usage in test
+verify(eventPublisher).publish(argThat(new BrandCreatedEventMatcher(expectedBrand)));
+```
+
+3. **Verification Order:**
+   - Use `InOrder` verification when order of calls matters
+   - Verify all interactions with mocks
+   - Verify no unexpected interactions occurred
+
+```java
+// ✅ Proper order verification
+InOrder inOrder = inOrder(repository, eventPublisher);
+inOrder.verify(repository).save(expectedEntity);
+inOrder.verify(eventPublisher).publish(expectedEvent);
+inOrder.verifyNoMoreInteractions();
+```
+
+4. **Error Messages:**
+   - Provide descriptive error messages in argument matchers
+   - Use AssertJ's SoftAssertions for multiple verifications
+
+```java
+verify(eventPublisher).publish(argThat(event -> {
+    SoftAssertions softly = new SoftAssertions();
+    softly.assertThat(event.getId())
+          .as("Event ID should match")
+          .isEqualTo(expectedId);
+    softly.assertThat(event.getName())
+          .as("Event name should match")
+          .isEqualTo(expectedName);
+    softly.assertAll();
+    return true;
+}));
+```
+
 ## Contract Testing
 - Implement consumer-driven contract testing using Pact
 - Derive contracts from OpenAPI specifications to ensure alignment

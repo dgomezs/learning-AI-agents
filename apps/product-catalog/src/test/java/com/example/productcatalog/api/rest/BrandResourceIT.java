@@ -25,7 +25,6 @@ import com.example.productcatalog.infrastructure.persistence.BrandRepository;
 import com.example.productcatalog.test.containers.PostgresTestContainer;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 // Java core imports
 import java.util.Optional;
 
@@ -49,7 +48,7 @@ public class BrandResourceIT {
         
         @Test
         @DisplayName("Should successfully create brand and emit event")
-        void shouldCreateBrandSuccessfully() throws URISyntaxException {
+        void shouldCreateBrandSuccessfully() throws Exception{
             // Given
             CreateBrandRequest request = new CreateBrandRequest(
                     "SportMaster",

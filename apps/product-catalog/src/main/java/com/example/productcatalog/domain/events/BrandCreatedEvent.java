@@ -15,12 +15,11 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BrandCreatedEvent {
-    private Long brandId;
+    private Long id;
     private String name;
     private String description;
     private String website;
     private String logoUrl;
     
-    @Builder.Default
-    private OffsetDateTime timestamp = OffsetDateTime.now();
+
 }
