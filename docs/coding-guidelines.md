@@ -66,17 +66,7 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Each use case should be a dedicated command or query class, all organized within the usecases directory
 - Follow naming convention: [Action][Entity][Command/Query] (e.g., CreateUserCommand, GetUserByIdQuery)
 
-## Testing Guidelines
-- Organize tests by:
-  - Use Cases: Testing application logic in isolation
-  - Adapters: Testing integration with external boundaries
-- Write unit tests for all use cases (both commands and queries)
-- Implement integration tests for repositories and external services
-- Create API tests validating against OpenAPI contracts
-- Test Kafka producers and consumers using test containers
-- Aim for at least 80% code coverage
-- Follow the Given/When/Then structure
-- Follow naming convention: [Class][Test] (e.g., CreateBrandCommandTest, BrandRepositoryTest)
+
 
 ## Security Considerations
 - Implement proper input validation
@@ -149,6 +139,19 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Use retry mechanisms for transient failures
 - Implement graceful degradation (e.g., circuit breakers with Resilience4j)
 - Set up alerts based on error rates and SLOs
+
+
+## Testing Guidelines
+- Organize tests by:
+  - Use Cases: Testing application logic in isolation
+  - Adapters: Testing integration with external boundaries
+- Write unit tests for all use cases (both commands and queries)
+- Implement integration tests for repositories and external services
+- Create API tests validating against OpenAPI contracts
+- Test Kafka producers and consumers using test containers
+- Aim for at least 80% code coverage
+- Follow the Given/When/Then structure
+- Follow naming convention: [Class][Test] (e.g., CreateBrandCommandTest, BrandRepositoryTest)
 
 ## Contract Testing
 - Implement consumer-driven contract testing using Pact
