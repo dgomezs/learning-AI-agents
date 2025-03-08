@@ -1,0 +1,36 @@
+# Kafka Topics Configuration
+topics:
+  # User-related events
+  - name: user-events
+    partitions: 6
+    replication-factor: 3
+    configs:
+      retention.ms: 604800000  # 7 days
+
+  # Product-related events
+  - name: product-events
+    partitions: 6
+    replication-factor: 3
+    configs:
+      retention.ms: 604800000  # 7 days
+
+  # Order-related events
+  - name: order-events
+    partitions: 6
+    replication-factor: 3
+    configs:
+      retention.ms: 1209600000  # 14 days
+
+  # Inventory-related events
+  - name: inventory-events
+    partitions: 4
+    replication-factor: 3
+    configs:
+      retention.ms: 604800000  # 7 days
+
+  # Payment-related events
+  - name: payment-events
+    partitions: 4
+    replication-factor: 3
+    configs:
+      retention.ms: 2592000000  # 30 days
