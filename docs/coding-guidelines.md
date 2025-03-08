@@ -75,6 +75,8 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Create API tests validating against OpenAPI contracts
 - Test Kafka producers and consumers using test containers
 - Aim for at least 80% code coverage
+- Follow the Given/When/Then structure
+- Follow naming convention: [Class][Test] (e.g., CreateBrandCommandTest, BrandRepositoryTest)
 
 ## Security Considerations
 - Implement proper input validation

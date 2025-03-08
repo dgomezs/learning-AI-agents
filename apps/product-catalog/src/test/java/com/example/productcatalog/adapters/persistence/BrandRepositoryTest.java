@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @QuarkusTestResource(PostgresTestContainer.class)
-public class BrandRepositoryIT {
+public class BrandRepositoryTest {
 
     @Inject
     BrandRepository brandRepository;

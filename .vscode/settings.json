@@ -30,6 +30,7 @@
         "Use imperative mood in commit messages"
 
     ],
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
 
