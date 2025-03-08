@@ -1,4 +1,4 @@
-package com.example.catalog.test.containers;
+package com.example.productcatalog.test.containers;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.slf4j.Logger;

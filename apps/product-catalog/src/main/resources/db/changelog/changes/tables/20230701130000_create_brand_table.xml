@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="20230701130000-1" author="product-catalog-team">
+        <comment>Create Brand table</comment>
+        <createTable tableName="brand">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="text"/>
+            <column name="website" type="varchar(255)"/>
+            <column name="logo_url" type="varchar(255)"/>
+            <column name="created_at" type="${now}" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="${now}" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <rollback>
+            <dropTable tableName="brand"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

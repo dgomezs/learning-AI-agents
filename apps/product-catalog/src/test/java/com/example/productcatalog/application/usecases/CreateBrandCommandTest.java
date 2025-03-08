@@ -1,9 +1,9 @@
-package com.example.catalog.application.usecases;
+package com.example.productcatalog.application.usecases;
 
-import com.example.catalog.domain.model.Brand;
-import com.example.catalog.domain.events.BrandCreatedEvent;
-import com.example.catalog.infrastructure.persistence.BrandRepository;
-import com.example.catalog.infrastructure.events.EventPublisher;
+import com.example.productcatalog.domain.model.Brand;
+import com.example.productcatalog.domain.events.BrandCreatedEvent;
+import com.example.productcatalog.infrastructure.persistence.BrandRepository;
+import com.example.productcatalog.infrastructure.events.EventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

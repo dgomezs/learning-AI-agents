@@ -1,15 +1,15 @@
-package com.example.catalog.adapters.persistence;
+package com.example.productcatalog.adapters.persistence;
 
-import com.example.catalog.domain.model.Brand;
-import com.example.catalog.infrastructure.persistence.BrandRepository;
-import com.example.catalog.test.containers.PostgresTestContainer;
+import com.example.productcatalog.domain.model.Brand;
+import com.example.productcatalog.infrastructure.persistence.BrandRepository;
+import com.example.productcatalog.test.containers.PostgresTestContainer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.common.QuarkusTestResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

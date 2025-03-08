@@ -1,88 +1,89 @@
 package com.example.productcatalog.application.usecases;
 
 import com.example.productcatalog.domain.model.Brand;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.example.productcatalog.domain.events.BrandCreatedEvent;
+import com.example.productcatalog.infrastructure.persistence.BrandRepository;
+import com.example.productcatalog.infrastructure.events.EventPublisher;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.UUID;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
+import java.time.OffsetDateTime;
 
 /**
- * Command to create a new brand in the system.
+ * Use case for creating a new brand.
  */
 @ApplicationScoped
-@Slf4j
+@RequiredArgsConstructor
 public class CreateBrandCommand {
-
+    
+    private final BrandRepository brandRepository;
+    private final EventPublisher eventPublisher;
+    
     /**
-     * Request data for creating a brand
+     * Execute the command to create a new brand.
+     *
+     * @param input the command input data
+     * @return the output with the new brand ID and details
+     */
+    @Transactional
+    public Output execute(Input input) {
+        Brand brand = Brand.builder()
+                .name(input.getName())
+                .description(input.getDescription())
+                .website(input.getWebsite())
+                .logoUrl(input.getLogoUrl())
+                .build();
+        
+        Brand savedBrand = brandRepository.save(brand);
+        
+        BrandCreatedEvent event = BrandCreatedEvent.builder()
+                .brandId(savedBrand.getId())
+                .name(savedBrand.getName())
+                .description(savedBrand.getDescription())
+                .website(savedBrand.getWebsite())
+                .logoUrl(savedBrand.getLogoUrl())
+                .build();
+        
+        eventPublisher.publish(event);
+        
+        return new Output(
+            savedBrand.getId(),
+            savedBrand.getName(),
+            savedBrand.getDescription(),
+            savedBrand.getWebsite(),
+            savedBrand.getLogoUrl(),
+            savedBrand.getCreatedAt(),
+            savedBrand.getUpdatedAt()
+        );
+    }
+    
+    /**
+     * Input data for creating a brand.
      */
     @Data
-    @Builder
-    @NoArgsConstructor
     @AllArgsConstructor
-    public static class Request {
-        @NotBlank(message = "Brand name is required")
-        @Size(max = 100, message = "Brand name cannot exceed 100 characters")
+    public static class Input {
         private String name;
-
-        @Size(max = 500, message = "Description cannot exceed 500 characters")
         private String description;
-
-        @Size(max = 255, message = "Website URL cannot exceed 255 characters")
         private String website;
-
-        @Size(max = 255, message = "Logo URL cannot exceed 255 characters")
         private String logoUrl;
     }
-
+    
     /**
-     * Response data for brand creation
+     * Output data after creating a brand.
      */
     @Data
-    @Builder
     @AllArgsConstructor
-    public static class Response {
-        private UUID id;
+    public static class Output {
+        private Long id;
         private String name;
         private String description;
         private String website;
         private String logoUrl;
-
-        public Response(Brand brand) {
-            this.id = brand.getId();
-            this.name = brand.getName();
-            this.description = brand.getDescription();
-            this.website = brand.getWebsite();
-            this.logoUrl = brand.getLogoUrl();
-        }
-    }
-
-    /**
-     * Execute the command to create a brand
-     * @param request The brand creation request
-     * @return Response with the created brand details
-     */
-    public Response execute(@Valid Request request) {
-        log.info("Creating brand with name: {}", request.getName());
-        
-        // Create a new brand entity
-        Brand brand = new Brand(request.getName());
-        brand.setDescription(request.getDescription());
-        brand.setWebsite(request.getWebsite());
-        brand.setLogoUrl(request.getLogoUrl());
-        
-        // Here we would typically save the brand via a repository
-        // and publish events, but this is a skeleton implementation
-        log.info("Brand created with ID: {}", brand.getId());
-        
-        return new Response(brand);
+        private OffsetDateTime createdAt;
+        private OffsetDateTime updatedAt;
     }
 }

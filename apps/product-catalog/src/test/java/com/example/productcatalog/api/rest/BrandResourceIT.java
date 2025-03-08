@@ -1,10 +1,10 @@
-package com.example.catalog.api.rest;
+package com.example.product.catalog.api.rest;
 
-import com.example.catalog.api.rest.dto.CreateBrandRequest;
-import com.example.catalog.api.rest.dto.BrandResponse;
-import com.example.catalog.domain.model.Brand;
-import com.example.catalog.infrastructure.persistence.BrandRepository;
-import com.example.catalog.test.containers.PostgresTestContainer;
+import com.example.product.catalog.api.rest.dto.CreateBrandRequest;
+import com.example.product.catalog.api.rest.dto.BrandResponse;
+import com.example.product.catalog.domain.model.Brand;
+import com.example.product.catalog.infrastructure.persistence.BrandRepository;
+import com.example.product.catalog.test.containers.PostgresTestContainer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.security.TestSecurity;

@@ -1,4 +1,4 @@
-package com.example.catalog.test.containers;
+package com.example.productcatalog.test.containers;
 
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;

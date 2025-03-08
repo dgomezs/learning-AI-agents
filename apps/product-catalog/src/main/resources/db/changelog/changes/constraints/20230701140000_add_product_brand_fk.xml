@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="20230701140000-1" author="product-catalog-team">
+        <comment>Add foreign key constraint from Product to Brand</comment>
+        <addForeignKeyConstraint baseTableName="product"
+                                 baseColumnNames="brand_id"
+                                 constraintName="fk_product_brand"
+                                 referencedTableName="brand"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"
+                                 onUpdate="CASCADE"/>
+        
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="product" constraintName="fk_product_brand"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
