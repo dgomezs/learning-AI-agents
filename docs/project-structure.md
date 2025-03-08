@@ -3,6 +3,12 @@
 ## Project Overview
 This is a Java-based monorepo containing multiple microservices. Each service follows clean architecture principles with a clear separation of commands and queries (CQRS). The project adopts API-first design using OpenAPI specifications and employs event-driven architecture with Kafka. The project aims to be maintainable, testable, and scalable.
 
+## GitHub Copilot Guidelines
+### Code Generation Best Practices
+- Ensure Copilot-generated code adheres to project coding standards.
+- Always review, test, and refactor suggestions before committing.
+- Use inline comments to guide Copilot when generating complex logic.
+
 ## Technology Stack
 - Java 21 (LTS)
 - Quarkus framework
@@ -23,13 +29,7 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Generate server stubs and client SDKs from OpenAPI specifications
 - Implement interfaces generated from OpenAPI specs
 - Validate requests against OpenAPI schemas
-
-## Event-Driven Architecture
-- Use Kafka for asynchronous communication between services
-- Define event schemas using Apache Avro or Schema Registry
-- Follow event sourcing patterns where appropriate
-- Implement idempotent consumers
-- Ensure proper error handling and dead letter queues
+- Define API versioning (`v1`, `v2`, etc.) and establish a deprecation policy.
 
 ## Coding Standards
 - Follow Google Java Style Guide
@@ -78,4 +78,82 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Profile and optimize critical code paths
 - Optimize Kafka topic partitioning for parallel processing
 
+## Dependency Management & Tooling
+- Use Maven BOM (Bill of Materials) to ensure consistent dependency versions.
+- Favor library versions that align with LTS support.
+- Scan dependencies for vulnerabilities (e.g., OWASP Dependency Check).
+- Ensure builds pass with `mvn verify` before pushing changes.
+
+## Logging & Monitoring
+- Use structured logging with JSON format (Logback + SLF4J).
+- Set appropriate log levels (`DEBUG`, `INFO`, `WARN`, `ERROR`).
+- Implement distributed tracing with OpenTelemetry where applicable.
+
+## Error Handling & Observability
+- Define a global exception handling strategy.
+- Use retry mechanisms for transient failures.
+- Implement graceful degradation (e.g., circuit breakers with Resilience4j).
+- Set up Prometheus metrics for monitoring service health.
+
 ## Example Service Structure
+
+```
+apps/
+├── service-a/
+│   ├── api/
+│   │   └── openapi.yaml
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── com/example/servicea/
+│   │   │   │       ├── api/
+│   │   │   │       │   ├── rest/
+│   │   │   │       │   └── grpc/
+│   │   │   │       ├── application/
+│   │   │   │       │   └── usecases/
+│   │   │   │       │       ├── CreateUserCommand.java
+│   │   │   │       │       ├── UpdateUserCommand.java
+│   │   │   │       │       ├── GetUserByIdQuery.java
+│   │   │   │       │       └── ListUsersQuery.java
+│   │   │   │       ├── domain/
+│   │   │   │       │   ├── model/
+│   │   │   │       │   ├── events/
+│   │   │   │       │   └── services/
+│   │   │   │       └── infrastructure/
+│   │   │   │           ├── config/
+│   │   │   │           ├── persistence/
+│   │   │   │           ├── kafka/
+│   │   │   │           │   ├── producers/
+│   │   │   │           │   └── consumers/
+│   │   │   │           └── external/
+│   │   │   └── resources/
+│   │   │       ├── application.properties
+│   │   │       └── avro/
+│   │   │           └── user-events.avsc
+│   │   └── test/
+│   │       └── java/
+│   │           └── com/example/servicea/
+│   │               ├── usecases/
+│   │               │   ├── CreateUserCommandTest.java
+│   │               │   ├── UpdateUserCommandTest.java
+│   │               │   ├── GetUserByIdQueryTest.java
+│   │               │   └── ListUsersQueryTest.java
+│   │               └── adapters/
+│   │                   ├── persistence/
+│   │                   ├── api/
+│   │                   ├── kafka/
+│   │                   └── external/
+│   └── pom.xml
+├── service-b/
+│   └── ...
+└── service-c/
+    └── ...
+libs/
+├── common/
+├── api-clients/
+└── shared-model/
+config/
+├── shared-config/
+└── kafka/
+    └── topics.yaml
+```
