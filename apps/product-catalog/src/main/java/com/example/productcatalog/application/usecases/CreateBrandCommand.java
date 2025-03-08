@@ -5,7 +5,7 @@ import com.example.productcatalog.domain.model.Brand;
 import com.example.productcatalog.infrastructure.events.EventPublisher;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
@@ -14,6 +14,7 @@ import java.time.Instant;
 
 
 @RequiredArgsConstructor
+@ApplicationScoped
 public class CreateBrandCommand {
     private final BrandRepository brandRepository;
     private final EventPublisher eventPublisher;

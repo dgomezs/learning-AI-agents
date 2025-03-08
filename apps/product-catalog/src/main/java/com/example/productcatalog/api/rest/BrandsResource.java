@@ -11,7 +11,6 @@ import com.example.productcatalog.api.rest.mappers.BrandMapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
-import jakarta.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
