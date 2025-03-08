@@ -30,6 +30,7 @@
 - the product catalog service should have the parent pom and the versions of all libraries should be defined in the parent pm. Plese update the project structure to reflect this preference
 - add to my coding standards that i want to use project Lombok
 - update my project structure specifying that I want to handle data migrations using Liquibase
+- update project structure specifying that for testing I want to use test containers. Test containers will be use when relevant to test adapters
 
 
 
