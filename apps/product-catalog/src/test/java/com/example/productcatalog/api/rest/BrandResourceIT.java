@@ -5,7 +5,7 @@ import com.example.productcatalog.api.rest.dto.BrandResponse;
 import com.example.productcatalog.domain.model.Brand;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
 import com.example.productcatalog.test.containers.PostgresTestContainer;
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
@@ -19,9 +19,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 @QuarkusTestResource(PostgresTestContainer.class)
-public class BrandResourceTest {
+public class BrandResourceIT {
 
     @Inject
     BrandRepository brandRepository;

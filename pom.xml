@@ -33,6 +33,7 @@
         <junit.version>5.10.0</junit.version>
         <rest-assured.version>5.3.1</rest-assured.version>
         <pact.version>4.5.5</pact.version>
+        <mockito.version>5.6.0</mockito.version>
         
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>

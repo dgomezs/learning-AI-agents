@@ -143,15 +143,16 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 
 ## Testing Guidelines
 - Organize tests by:
-  - Use Cases: Testing application logic in isolation
-  - Adapters: Testing integration with external boundaries
+  - Use Cases: Testing application logic in isolation. Use @QuarkusTest for these tests
+  - Adapters: Testing integration with external boundaries. Use @QuarkusIntegrationTest for these tests
 - Write unit tests for all use cases (both commands and queries)
 - Implement integration tests for repositories and external services
 - Create API tests validating against OpenAPI contracts
 - Test Kafka producers and consumers using test containers
 - Aim for at least 80% code coverage
 - Follow the Given/When/Then structure
-- Follow naming convention: [Class][Test] (e.g., CreateBrandCommandTest, BrandRepositoryTest)
+- For unit tests follow naming convention: [Class][Test] (e.g., CreateBrandCommandTest)
+- For integration tests follow naming convention: [Class][IT] (e.g., BrandRepositoryIT)
 
 ## Contract Testing
 - Implement consumer-driven contract testing using Pact
