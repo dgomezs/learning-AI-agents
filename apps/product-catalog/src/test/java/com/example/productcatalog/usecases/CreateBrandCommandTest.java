@@ -3,6 +3,9 @@ package com.example.productcatalog.usecases;
 import com.example.productcatalog.domain.model.Brand;
 import com.example.productcatalog.infrastructure.events.EventPublisher;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
+
+import io.quarkus.test.junit.QuarkusTest;
+
 import com.example.productcatalog.domain.events.BrandCreatedEvent;
 
 import com.example.productcatalog.application.usecases.CreateBrandCommand;
@@ -18,6 +21,7 @@ import java.net.URISyntaxException;
 
 
 
+@QuarkusTest
 class CreateBrandCommandTest {
 
     private BrandRepository brandRepository;
@@ -49,7 +53,7 @@ class CreateBrandCommandTest {
             .logo(input.getLogoUrl())
             .build();
 
-        when(brandRepository.persist(any(Brand.class))).thenReturn(expectedBrand);
+        
 
         // When
         CreateBrandCommand.Output output = createBrandCommand.execute(input);
@@ -62,14 +66,14 @@ class CreateBrandCommandTest {
         assertEquals(expectedBrand.getWebsite(), output.getWebsite());
         assertEquals(expectedBrand.getLogo(), output.getLogoUrl());
 
-        verify(brandRepository, times(1)).persist(argThat(brand -> 
+        verify(brandRepository, times(1)).persist(argThat((Brand brand) -> 
             brand.getName().equals(input.getName()) &&
             brand.getDescription().equals(input.getDescription()) &&
             brand.getWebsite().equals(input.getWebsite()) &&
-            brand.getLogo().equals(input.getLogoUrl())
-        ));
+            brand.getLogo().equals(input.getLogoUrl()))
+        );
 
-        verify(eventPublisher, times(1)).publish(argThat((BrandCreatedEvent event) -> 
+        verify(eventPublisher, times(1)).publish(argThat((BrandCreatedEvent event) ->         
             event.getName().equals(expectedBrand.getName()) &&
             event.getDescription().equals(expectedBrand.getDescription()) &&
             event.getWebsite().equals(expectedBrand.getWebsite().toString()) && 

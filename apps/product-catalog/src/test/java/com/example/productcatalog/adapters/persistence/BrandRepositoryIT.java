@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusIntegrationTest
@@ -33,13 +32,13 @@ public class BrandRepositoryIT {
 
         // When
         brandRepository.persist(brand);
-        Optional<Brand> foundBrand = brandRepository.findByIdOptional(brand.getId());
+        Brand foundBrand = brandRepository.findById(brand.getId());
 
         // Then
-        assertTrue(foundBrand.isPresent());
-        assertEquals("SportMaster", foundBrand.get().getName());
-        assertEquals("Leading sports equipment manufacturer", foundBrand.get().getDescription());
-        assertEquals("https://sportmaster.com", foundBrand.get().getWebsite());
-        assertEquals("sportmaster-logo.png", foundBrand.get().getLogo());
+        
+        assertEquals("SportMaster", foundBrand.getName());
+        assertEquals("Leading sports equipment manufacturer", foundBrand.getDescription());
+        assertEquals("https://sportmaster.com", foundBrand.getWebsite());
+        assertEquals("sportmaster-logo.png", foundBrand.getLogo());
     }
 }

@@ -4,10 +4,13 @@ import com.example.productcatalog.domain.events.BrandCreatedEvent;
 import com.example.productcatalog.domain.model.Brand;
 import com.example.productcatalog.infrastructure.events.EventPublisher;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
+
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 import java.net.URI;
+import java.time.Instant;
 
 
 @RequiredArgsConstructor
@@ -23,7 +26,8 @@ public class CreateBrandCommand {
                 .logo(input.getLogoUrl())
                 .build();
 
-        Brand savedBrand = brandRepository.persist(brand);
+        brandRepository.persist(brand);
+        Brand savedBrand = brandRepository.findById(brand.getId());
 
         eventPublisher.publish(new BrandCreatedEvent(
                 savedBrand.getId(),
@@ -38,7 +42,9 @@ public class CreateBrandCommand {
                 savedBrand.getName(),
                 savedBrand.getDescription(),
                 savedBrand.getWebsite(),
-                savedBrand.getLogo()
+                savedBrand.getLogo(),
+                savedBrand.getCreatedAt(),
+                savedBrand.getUpdatedAt()
         );
     }
 
@@ -57,5 +63,7 @@ public class CreateBrandCommand {
         String description;
         URI website;
         URI logoUrl;
+        Instant createdAt;
+        Instant updatedAt;
     }
 }

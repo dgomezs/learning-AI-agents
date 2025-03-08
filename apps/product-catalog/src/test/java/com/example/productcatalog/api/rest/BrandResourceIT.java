@@ -20,13 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.example.productcatalog.domain.model.Brand;
 import com.example.productcatalog.api.rest.model.BrandResponse;
 import com.example.productcatalog.api.rest.model.CreateBrandRequest;
-import com.example.productcatalog.api.rest.model.ErrorResponse;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
 import com.example.productcatalog.test.containers.PostgresTestContainer;
 
 import java.net.URI;
-// Java core imports
-import java.util.Optional;
 
 @QuarkusIntegrationTest
 @QuarkusTestResource(PostgresTestContainer.class)
