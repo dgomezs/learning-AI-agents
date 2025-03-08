@@ -16,3 +16,8 @@
 
 - Update the README file explaining the docs folder and the files in it.
 - Update the README explaining that this project represents an e-commerce website. Users can search for products, add products to their basket and then checkout the products paying with their credit card.
+
+
+## Others
+- Add to gitgnore the setup for a java project using maven
+
