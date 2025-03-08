@@ -10,5 +10,5 @@ logs/
 Thumbs.db
 
 # IDE specific files
-.vscode/
+# Removing .vscode from gitignore to track VS Code settings
 .idea/

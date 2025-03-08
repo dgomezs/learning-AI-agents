@@ -1,0 +1,30 @@
+{
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true
+    },
+    "github.copilot.enable": true,
+    "github.copilot.suggest.enable": true,
+    "github.copilot.suggest.showIcons": true,
+    "github.copilot.advancedSettings": {
+        "contextLength": 1000, // Increase context length for better suggestions
+        "languageContext": {
+            "java": true,
+        }
+    },
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "file": "docs/project-structure.md",
+        }
+    ],
+    "github.copilot.chat.commitMessageGeneration.instructions": [
+        "Use conventional commit messages",
+        "Provide a detail description of the changes",
+        "Use imperative mood in commit messages"
+
+    ],
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true
+}
+
