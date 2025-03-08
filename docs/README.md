@@ -36,6 +36,45 @@ This project is configured to maximize GitHub Copilot's effectiveness:
 2. Copilot is set up to follow the architectural patterns and coding standards defined in `project.md`.
 3. Example prompts in `prompts.md` can help you get the most out of Copilot.
 
+### Best Practices for Copilot Instructions
+
+#### Project-Level Instructions
+1. **Maintain Detailed Documentation**:
+   - Keep `project.md` updated with the latest architectural decisions
+   - Document coding patterns with concrete examples
+   - Clearly specify folder structures and naming conventions
+
+2. **Configure VS Code Settings**:
+   ```json
+   "github.copilot.chat.codeGeneration.instructions": [
+     { "file": "docs/project.md" }
+   ],
+   "github.copilot.chat.codeGeneration.useInstructionFiles": true
+   ```
+
+3. **Use Multiple Instruction Files**:
+   - Split complex guidelines into focused documents
+   - Reference all files in your settings
+
+#### File-Level Instructions
+1. **Add Context in Comments**:
+   - Place detailed comments at the top of key files
+   - Reference related files and patterns
+   - Explain non-obvious design decisions
+
+2. **Strategic Code Comments**:
+   - Mark areas where generated code should follow specific patterns
+   - Use TODO comments to guide future code generation
+
+#### Effective Prompts
+1. **Be Specific**:
+   - Mention the exact pattern to follow: "Generate a Product service following the pattern in UserService.java"
+   - Specify architectural constraints: "Create a repository that follows our clean architecture guidelines"
+
+2. **Reference Documentation**:
+   - "Following the structure in docs/project.md, create a new command class for user registration"
+   - "Using our Kafka consumer pattern documented in project.md, create a listener for order events"
+
 ## Project Architecture
 The platform follows clean architecture principles with CQRS pattern implementation, as detailed in the `project.md` file. It uses an API-first design approach with OpenAPI specifications and event-driven architecture with Kafka.
 
