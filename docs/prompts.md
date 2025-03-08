@@ -26,4 +26,5 @@
 ## Project Setup
 
 - Add appropriate entries to .gitignore for a Java project using Maven build system.
+- the product catalog service should have the parent pom and the versions of all libraries should be defined in the parent pm. Plese update the project structure to reflect this preference
 

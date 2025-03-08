@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>com.example.ecommerce</groupId>
-    <artifactId>ecommerce-parent</artifactId>
+    <groupId>com.example</groupId>
+    <artifactId>microservices-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
@@ -20,32 +20,39 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         
         <!-- Dependency versions -->
-        <quarkus.platform.version>3.5.0</quarkus.platform.version>
+        <quarkus.version>3.4.1</quarkus.version>
         <lombok.version>1.18.30</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <openapi-generator.version>7.0.1</openapi-generator.version>
         <jackson.version>2.15.2</jackson.version>
-        <testcontainers.version>1.19.0</testcontainers.version>
+        <testcontainers.version>1.18.3</testcontainers.version>
         <avro.version>1.11.2</avro.version>
         <apicurio.version>2.4.4.Final</apicurio.version>
+        <opentelemetry.version>1.29.0</opentelemetry.version>
+        <kafka.version>3.5.0</kafka.version>
+        <junit.version>5.10.0</junit.version>
+        <rest-assured.version>5.3.1</rest-assured.version>
+        <pact.version>4.5.5</pact.version>
         
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
     </properties>
     
     <modules>
         <module>libs/common</module>
         <module>libs/shared-model</module>
+        <module>apps/product-catalog</module>
     </modules>
     
     <dependencyManagement>
         <dependencies>
             <!-- Quarkus BOM -->
             <dependency>
-                <groupId>io.quarkus.platform</groupId>
+                <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-bom</artifactId>
-                <version>${quarkus.platform.version}</version>
+                <version>${quarkus.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -93,6 +100,20 @@
                 <artifactId>apicurio-registry-serdes-avro</artifactId>
                 <version>${apicurio.version}</version>
             </dependency>
+            
+            <!-- Pact Dependencies -->
+            <dependency>
+                <groupId>au.com.dius.pact.consumer</groupId>
+                <artifactId>junit5</artifactId>
+                <version>${pact.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>au.com.dius.pact.provider</groupId>
+                <artifactId>junit5</artifactId>
+                <version>${pact.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     
@@ -133,9 +154,9 @@
                 
                 <!-- Quarkus plugin -->
                 <plugin>
-                    <groupId>io.quarkus.platform</groupId>
+                    <groupId>io.quarkus</groupId>
                     <artifactId>quarkus-maven-plugin</artifactId>
-                    <version>${quarkus.platform.version}</version>
+                    <version>${quarkus.version}</version>
                 </plugin>
                 
                 <!-- OpenAPI Generator plugin -->
@@ -150,6 +171,21 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                
+                <!-- Failsafe plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven-failsafe-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -86,6 +86,7 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Use Maven BOM (Bill of Materials) to ensure consistent dependency versions.
 - Favor library versions that align with LTS support.
 - Scan dependencies for vulnerabilities (e.g., OWASP Dependency Check).
+- The root pom should contain the versions of the libraries used by the apps and libs
 - Ensure builds pass with `mvn verify` before pushing changes.
 
 ## Observability Stack
