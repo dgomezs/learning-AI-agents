@@ -2,10 +2,15 @@ package com.example.productcatalog.adapters.persistence;
 
 import com.example.productcatalog.domain.model.Brand;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
+import com.example.productcatalog.test.containers.PostgresTestContainer;
+
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,14 +22,14 @@ public class BrandRepositoryIT {
     BrandRepository brandRepository;
 
     @Test
-    @Transactional
-    void shouldPersistAndFindBrand() {
+
+    void shouldPersistAndFindBrand() throws URISyntaxException {
         // Given
         Brand brand = new Brand();
         brand.setName("SportMaster");
         brand.setDescription("Leading sports equipment manufacturer");
-        brand.setWebsite("https://sportmaster.com");
-        brand.setLogo("sportmaster-logo.png");
+        brand.setWebsite(new URI("https://sportmaster.com"));
+        brand.setLogo(  new URI("sportmaster-logo.png"));
 
         // When
         brandRepository.persist(brand);

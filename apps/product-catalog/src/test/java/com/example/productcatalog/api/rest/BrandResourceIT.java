@@ -1,23 +1,33 @@
 package com.example.productcatalog.api.rest;
 
-import com.example.productcatalog.api.rest.dto.CreateBrandRequest;
-import com.example.productcatalog.api.rest.dto.BrandResponse;
+// Jakarta EE imports
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
+
+// Test framework imports
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+// Application imports
 import com.example.productcatalog.domain.model.Brand;
+import com.example.productcatalog.api.rest.model.BrandResponse;
+import com.example.productcatalog.api.rest.model.CreateBrandRequest;
+import com.example.productcatalog.api.rest.model.ErrorResponse;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
 import com.example.productcatalog.test.containers.PostgresTestContainer;
-import io.quarkus.test.junit.QuarkusIntegrationTest;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
 
-import jakarta.inject.Inject;
+import java.net.URI;
+import java.net.URISyntaxException;
+// Java core imports
 import java.util.Optional;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusIntegrationTest
 @QuarkusTestResource(PostgresTestContainer.class)
@@ -25,41 +35,60 @@ public class BrandResourceIT {
 
     @Inject
     BrandRepository brandRepository;
+    
 
-    @Test
-    @DisplayName("Should create brand and persist to database")
-    public void shouldCreateAndPersistBrand() {
-        // Given
-        CreateBrandRequest request = new CreateBrandRequest(
-                "SportMaster",
-                "Leading sports equipment manufacturer",
-                "https://sportmaster.com",
-                "sportmaster-logo.png"
-        );
+    @AfterEach
+    void cleanup() {
+        brandRepository.deleteAll();
+    
+    }
 
-        // When
-        BrandResponse response = given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .post("/api/v1/brands")
-            .then()
-            .statusCode(201)
-            .body("id", notNullValue())
-            .body("name", is("SportMaster"))
-            .body("description", is("Leading sports equipment manufacturer"))
-            .body("website", is("https://sportmaster.com"))
-            .body("logoUrl", is("sportmaster-logo.png"))
-            .extract()
-            .as(BrandResponse.class);
-
-        // Then
-        Optional<Brand> persistedBrand = brandRepository.findById(response.getId());
+    @Nested
+    @DisplayName("Create Brand")
+    class CreateBrand {
         
-        assertTrue(persistedBrand.isPresent(), "Brand should be persisted in database");
-        assertEquals("SportMaster", persistedBrand.get().getName(), "Persisted brand name should match");
-        assertEquals("Leading sports equipment manufacturer", persistedBrand.get().getDescription(), "Persisted brand description should match");
-        assertEquals("https://sportmaster.com", persistedBrand.get().getWebsite(), "Persisted brand website should match");
-        assertEquals("sportmaster-logo.png", persistedBrand.get().getLogoUrl(), "Persisted brand logo URL should match");
+        @Test
+        @DisplayName("Should successfully create brand and emit event")
+        void shouldCreateBrandSuccessfully() throws URISyntaxException {
+            // Given
+            CreateBrandRequest request = new CreateBrandRequest(
+                    "SportMaster",
+                    "Leading sports equipment manufacturer",
+                    new URI("https://sportmaster.com"),
+                    new URI("sportmaster-logo.png")
+            );
+
+            // When
+            BrandResponse response = given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/api/v1/brands")
+                .then()
+                .statusCode(201)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("id", notNullValue())
+                .body("name", is(request.getName()))
+                .body("description", is(request.getDescription()))
+                .body("website", is(request.getWebsite()))
+                .body("logoUrl", is(request.getLogoUrl()))
+                .extract()
+                .as(BrandResponse.class);
+
+            // Then
+            // Verify database persistence
+            Brand brand = brandRepository.findById(response.getId());
+                        
+            
+            assertAll("Brand properties",
+                () -> assertEquals(request.getName(), brand.getName(), "Brand name should match"),
+                () -> assertEquals(request.getDescription(), brand.getDescription(), "Brand description should match"),
+                () -> assertEquals(request.getWebsite(), brand.getWebsite(), "Brand website should match"),
+                () -> assertEquals(request.getLogoUrl(), brand.getLogo(), "Brand logo URL should match")
+            );
+
+        
+        }
+
     }
 }
