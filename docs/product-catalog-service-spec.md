@@ -19,11 +19,8 @@ The Product Catalog Service is responsible for managing product information acro
 1. Each product must belong to at least one category
 2. Product SKUs must be unique across the entire catalog
 3. Products can exist in draft state before being published
-4. Product visibility can be controlled by channel or market
 5. Price changes should be tracked with an audit trail
-6. Product descriptions support internationalization (i18n)
-7. Products can be bundled or sold individually
-8. Seasonal products are automatically flagged based on date ranges
+
 
 ## Domain Model
 
@@ -35,11 +32,9 @@ The Product Catalog Service is responsible for managing product information acro
 - Name
 - Description (supports rich text and i18n)
 - Brand
-- Manufacturer
 - Creation date
 - Last updated date
 - Status (draft, active, discontinued)
-- Attributes (dynamic, extensible)
 - Categories (multiple)
 - Tags
 
@@ -63,16 +58,7 @@ The Product Catalog Service is responsible for managing product information acro
 - Amount
 - Currency
 - Effective date range
-- Type (regular, sale, MSRP)
-- Market/channel applicability
 
-#### Media Asset
-- Unique identifier
-- Type (image, video, document)
-- URL/path
-- Alt text
-- Sort order
-- Tags
 
 ## Use Cases
 
@@ -83,9 +69,8 @@ The Product Catalog Service is responsible for managing product information acro
 4. Publish product (transition from draft to active)
 5. Discontinue product
 6. Assign products to categories
-7. Upload and associate media with products
 8. Update product pricing
-9. Clone existing product
+
 
 ### Product Discovery
 1. Search products by various criteria
@@ -127,13 +112,7 @@ The service exposes both REST APIs (via OpenAPI) and event-driven interfaces (vi
 - Support for 10,000+ product updates per hour
 
 ## Integration Points
-- Inventory Management Service
-- Pricing Service
-- Order Service
 - Search Service
-- Content Management System (for rich descriptions)
-- Media Asset Management Service
-- Analytics Service
 
 ## Data Consistency and Availability
 - Product data must be highly available (99.99% uptime)
@@ -141,7 +120,7 @@ The service exposes both REST APIs (via OpenAPI) and event-driven interfaces (vi
 - Eventual consistency model for product data across services
 
 ## Security Requirements
-- Role-based access control for product management
+
 - Read-only public access for product browsing
 - Audit trail for all product changes
 - Input validation to prevent injection attacks
