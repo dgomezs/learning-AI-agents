@@ -18,8 +18,8 @@ public class PostgresTestContainer implements QuarkusTestResourceLifecycleManage
     private static final Logger LOG = LoggerFactory.getLogger(PostgresTestContainer.class);
     private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres:13");
     private static final String DATABASE_NAME = "catalog_test_db";
-    private static final String USERNAME = "test_user";
-    private static final String PASSWORD = "test_password";
+    private static final String USERNAME = System.getenv("POSTGRES_TEST_USER");
+    private static final String PASSWORD = System.getenv("POSTGRES_TEST_PASSWORD");
 
     private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(POSTGRES_IMAGE)
             .withDatabaseName(DATABASE_NAME)
