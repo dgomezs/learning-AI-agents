@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>com.example</groupId>
-    <artifactId>microservices-parent</artifactId>
+    <groupId>com.example.ecommerce</groupId>
+    <artifactId>ecommerce-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
@@ -34,6 +34,7 @@
         <rest-assured.version>5.3.1</rest-assured.version>
         <pact.version>4.5.5</pact.version>
         <mockito.version>5.6.0</mockito.version>
+        <cdi-api.version>2.0</cdi-api.version>
         
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -115,6 +116,23 @@
                 <version>${pact.version}</version>
                 <scope>test</scope>
             </dependency>
+            
+            <!-- Quarkus Persistence -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-hibernate-orm-panache</artifactId>
+                <version>${quarkus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-jdbc-postgresql</artifactId>
+                <version>${quarkus.version}</version>
+            </dependency>
+            <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>${cdi-api.version}</version>
+        </dependency>
         </dependencies>
     </dependencyManagement>
     
@@ -187,6 +205,11 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <includes>
+                            <include>**/*IT.java</include>
+                        </includes>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -199,8 +222,6 @@
                 <configuration>
                     <includes>
                         <include>**/*Test.java</include>
-                        <include>**/*Tests.java</include>
-                        <include>**/*TestCase.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -218,20 +239,6 @@
                 <configuration>
                     <release>${java.version}</release>
                 </configuration>
-            </plugin>
-            <!-- Maven Failsafe Plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

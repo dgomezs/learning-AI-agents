@@ -18,9 +18,9 @@
         {
             "file": "docs/coding-guidelines.md",
         }, {
-            "file": "docs/product-catalog-service-spec.md",
+            "file": "docs/product-catalog/product-catalog-service-models.md",
         },{
-            "file": "docs/product-catalog-use-cases.md",
+            "file": "docs/product-catalog/product-catalog-use-cases.md",
                
         }
     ],

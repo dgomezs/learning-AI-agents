@@ -1,39 +1,13 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
-  title: Product Catalog Service API
-  description: API for managing product catalog information
-  version: 1.0.0
-  contact:
-    name: Product Team
-    email: product-team@example.com
+  title: Product Catalog API
+  description: API for managing product catalog
+  version: 1.0.0  
 servers:
-  - url: http://localhost:8080
-    description: Development server
+  - url: https://example.com/api/v1
+    description: Local development server
 paths:
   /brands:
-    get:
-      summary: List all brands
-      operationId: listBrands
-      tags:
-        - brands
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 0
-        - name: size
-          in: query
-          schema:
-            type: integer
-            default: 20
-      responses:
-        200:
-          description: List of brands
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BrandPageResponse'
     post:
       summary: Create a new brand
       operationId: createBrand
@@ -46,41 +20,26 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateBrandRequest'
       responses:
-        201:
+        '201':
           description: Brand created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BrandResponse'
-        400:
+        '400':
           description: Invalid input
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-
-  /brands/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    get:
-      summary: Get brand by ID
-      operationId: getBrandById
-      tags:
-        - brands
-      responses:
-        200:
-          description: Brand details
+        '401':
+          description: Unauthorized
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/BrandResponse'
-        404:
-          description: Brand not found
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
           content:
             application/problem+json:
               schema:
@@ -95,69 +54,135 @@ components:
       properties:
         name:
           type: string
+          description: Brand name
+          example: 'SportMaster'
           maxLength: 100
         description:
           type: string
+          description: Brand description
+          example: 'Leading sports equipment manufacturer'
           maxLength: 500
         website:
           type: string
           format: uri
+          description: Brand website URL
+          example: 'https://sportmaster.com'
           maxLength: 255
         logoUrl:
           type: string
           format: uri
+          description: URL to the brand logo image
+          example: 'https://sportmaster.com/images/logo.png'
           maxLength: 255
-          
+
     BrandResponse:
       type: object
+      required:
+        - id
+        - name
+        - website
+        - logoUrl
+        - createdAt
+        - updatedAt
+      additionalProperties: false
       properties:
         id:
-          type: string
-          format: uuid
+          type: integer
+          format: int64
+          description: Unique identifier for the brand
+          example: 1234
         name:
           type: string
+          description: Brand name
+          example: 'SportMaster'
+          maxLength: 100
         description:
           type: string
+          description: Brand description
+          example: 'Leading sports equipment manufacturer'
+          maxLength: 500
         website:
           type: string
           format: uri
+          description: Brand website URL
+          example: 'https://sportmaster.com'
+          maxLength: 255          
         logoUrl:
           type: string
           format: uri
+          description: URL to the brand logo image
+          example: 'https://sportmaster.com/images/logo.png'
+          maxLength: 255
         createdAt:
           type: string
           format: date-time
+          description: Creation timestamp
+          example: '2023-06-07T14:30:00Z'
         updatedAt:
           type: string
           format: date-time
-          
-    BrandPageResponse:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/BrandResponse'
-        pageNumber:
-          type: integer
-        pageSize:
-          type: integer
-        totalElements:
-          type: integer
-        totalPages:
-          type: integer
-          
+          description: Last update timestamp
+          example: '2023-06-07T14:30:00Z'
+
     ErrorResponse:
       type: object
+      description: Problem Details for HTTP APIs (RFC 7807)
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - timestamp
       properties:
-        status:
-          type: integer
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          example: 'https://api.product-catalog.com/errors/validation-error'
+          format: uri
         title:
           type: string
+          description: A short, human-readable summary of the problem type
+          example: 'Validation Error'
+        status:
+          type: integer
+          description: The HTTP status code
+          example: 400
         detail:
           type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: 'Brand name must not be empty and must be less than 100 characters'
         timestamp:
           type: string
           format: date-time
+          description: The time when the error occurred
+          example: '2024-01-20T10:30:00Z'
         path:
           type: string
+          description: The request path that caused the error
+          example: '/api/v1/brands'
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem
+          example: '/errors/12345'
+          format: uri
+        validationErrors:
+          type: array
+          description: List of field-level validation errors
+          items:
+            type: object
+            required:
+              - field
+              - message
+            properties:
+              field:
+                type: string
+                description: The field that failed validation
+                example: 'name'
+              message:
+                type: string
+                description: The validation error message
+                example: 'must not be empty'
+              rejectedValue:
+                type: string
+                description: The value that was rejected
+                example: ''

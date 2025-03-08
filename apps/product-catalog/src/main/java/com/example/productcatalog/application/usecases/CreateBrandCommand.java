@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+
+import java.net.URI;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 
 /**
@@ -34,29 +37,30 @@ public class CreateBrandCommand {
                 .name(input.getName())
                 .description(input.getDescription())
                 .website(input.getWebsite())
-                .logoUrl(input.getLogoUrl())
+                .logo(input.getLogoUrl())
                 .build();
         
-        Brand savedBrand = brandRepository.save(brand);
+        // Using Quarkus Panache repository method for persistence
+        brandRepository.persist(brand);
         
         BrandCreatedEvent event = BrandCreatedEvent.builder()
-                .brandId(savedBrand.getId())
-                .name(savedBrand.getName())
-                .description(savedBrand.getDescription())
-                .website(savedBrand.getWebsite())
-                .logoUrl(savedBrand.getLogoUrl())
+                .brandId(brand.getId())
+                .name(brand.getName())
+                .description(brand.getDescription())
+                .website(brand.getWebsite().toString())
+                .logoUrl(brand.getLogo().toString())
                 .build();
         
         eventPublisher.publish(event);
         
         return new Output(
-            savedBrand.getId(),
-            savedBrand.getName(),
-            savedBrand.getDescription(),
-            savedBrand.getWebsite(),
-            savedBrand.getLogoUrl(),
-            savedBrand.getCreatedAt(),
-            savedBrand.getUpdatedAt()
+            brand.getId(),
+            brand.getName(),
+            brand.getDescription(),
+            brand.getWebsite(),
+            brand.getLogo(),
+            brand.getCreatedAt(),
+            brand.getUpdatedAt()
         );
     }
     
@@ -68,8 +72,8 @@ public class CreateBrandCommand {
     public static class Input {
         private String name;
         private String description;
-        private String website;
-        private String logoUrl;
+        private URI website;
+        private URI logoUrl;
     }
     
     /**
@@ -81,9 +85,9 @@ public class CreateBrandCommand {
         private Long id;
         private String name;
         private String description;
-        private String website;
-        private String logoUrl;
-        private OffsetDateTime createdAt;
-        private OffsetDateTime updatedAt;
+        private URI website;
+        private URI logoUrl;
+        private Instant createdAt;
+        private Instant updatedAt;
     }
 }

@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.example</groupId>
-        <artifactId>microservices-parent</artifactId>
+        <groupId>com.example.ecommerce</groupId>
+        <artifactId>ecommerce-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
@@ -16,18 +16,12 @@
     <description>Service for managing product catalog information</description>
 
     <properties>
-        <compiler-plugin.version>${maven-compiler-plugin.version}</compiler-plugin.version>
-        <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.5.0</quarkus.platform.version>
+        <quarkus.platform.version>${quarkus.version}</quarkus.platform.version>
         <skipITs>false</skipITs>
-        <surefire-plugin.version>${maven-surefire-plugin.version}</surefire-plugin.version>
-        <lombok.version>${lombok.version}</lombok.version>
-        <testcontainers.version>${testcontainers.version}</testcontainers.version>
-        <mockito.version>${mockito.version}</mockito.version>
     </properties>
 
     <dependencyManagement>
@@ -99,51 +93,123 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>kafka</artifactId>
-            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>au.com.dius.pact.consumer</groupId>
             <artifactId>junit5</artifactId>
-            <version>${pact.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>au.com.dius.pact.provider</groupId>
             <artifactId>junit5</artifactId>
-            <version>${pact.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>    
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>        
+            </plugin>
+            <!-- Surefire plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>                
+            </plugin>
+            <!-- Failsafe plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>                
+            </plugin>
+            <!-- OpenAPI Generator plugin -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>6.6.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+    <inputSpec>${project.basedir}/api/rest/openapi.yaml</inputSpec>
+    <generatorName>jaxrs-spec</generatorName>
+    <apiPackage>com.example.productcatalog.api.rest</apiPackage>
+    <modelPackage>com.example.productcatalog.api.rest.model</modelPackage>
+    <generateApiTests>false</generateApiTests>
+    <generateModelTests>false</generateModelTests>
+    <output>${project.build.directory}/generated-sources</output>
+    <configOptions>
+        <sourceFolder>src/gen/java</sourceFolder>
+        
+        <!-- Use Jakarta EE for Quarkus -->
+        <useJakartaEe>true</useJakartaEe>
+        
+        <!-- Java 8 Date/Time library (Good for Quarkus) -->
+        <dateLibrary>java8</dateLibrary>
+        
+        <!-- Generate interfaces only (avoid implementation conflicts) -->
+        <interfaceOnly>true</interfaceOnly>
+
+        <!-- Use Response type for better API control in Quarkus -->
+        <returnResponse>true</returnResponse>
+        
+        <!-- OpenAPI annotations are not required in Quarkus -->
+        <useSwaggerAnnotations>false</useSwaggerAnnotations>
+        
+        <!-- Use Lombok to reduce boilerplate -->
+        <additionalModelTypeAnnotations>@lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+
+        <!-- Avoid blocking APIs unless needed -->
+        <supportAsync>true</supportAsync>
+
+        <!-- Avoid implicit headers in API methods -->
+        <implicitHeaders>false</implicitHeaders>
+
+        <!-- Use Optional for null safety (good practice for Quarkus) -->
+        <useOptional>true</useOptional>
+
+        <!-- Disable OpenAPI nullable (Quarkus doesn't need it) -->
+        <openApiNullable>false</openApiNullable>
+
+        <!-- Generate API interfaces with @Path annotation -->
+        <useBeanValidation>true</useBeanValidation>
+    </configOptions>
+</configuration>
+
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
