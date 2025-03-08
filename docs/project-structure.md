@@ -84,16 +84,34 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Scan dependencies for vulnerabilities (e.g., OWASP Dependency Check).
 - Ensure builds pass with `mvn verify` before pushing changes.
 
-## Logging & Monitoring
-- Use structured logging with JSON format (Logback + SLF4J).
-- Set appropriate log levels (`DEBUG`, `INFO`, `WARN`, `ERROR`).
-- Implement distributed tracing with OpenTelemetry where applicable.
+## Observability Stack
+- Implement the three pillars of observability: logs, metrics, and traces
+- Use OpenTelemetry as the vendor-agnostic observability framework
+- Export telemetry data to your preferred backends (Jaeger, Prometheus, Elasticsearch, etc.)
+- Follow W3C trace context specification for consistent cross-service tracing
 
-## Error Handling & Observability
-- Define a global exception handling strategy.
-- Use retry mechanisms for transient failures.
-- Implement graceful degradation (e.g., circuit breakers with Resilience4j).
-- Set up Prometheus metrics for monitoring service health.
+## Logging
+- Use structured logging with JSON format (Logback + SLF4J)
+- Set appropriate log levels (`DEBUG`, `INFO`, `WARN`, `ERROR`)
+- Include trace and span IDs in log entries for correlation
+- Centralize logs in a searchable platform (e.g., Elasticsearch)
+
+## Tracing & Metrics with OpenTelemetry
+- Implement distributed tracing across all services
+- Configure OpenTelemetry SDK in each service
+- Automatically instrument frameworks and libraries where possible
+- Add custom instrumentation for business-critical operations
+- Create custom spans for important business transactions
+- Define and collect custom metrics for business KPIs
+- Expose Prometheus endpoint in each service
+- Track the four golden signals: latency, traffic, errors, and saturation
+- Set up dashboards for visualizing metrics and traces
+
+## Error Handling & Resilience
+- Define a global exception handling strategy
+- Use retry mechanisms for transient failures
+- Implement graceful degradation (e.g., circuit breakers with Resilience4j)
+- Set up alerts based on error rates and SLOs
 
 ## Example Service Structure
 
@@ -119,15 +137,21 @@ apps/
 │   │   │   │       │   ├── model/
 │   │   │   │       │   ├── events/
 │   │   │   │       │   └── services/
-│   │   │   │       └── infrastructure/
-│   │   │   │           ├── config/
-│   │   │   │           ├── persistence/
-│   │   │   │           ├── kafka/
-│   │   │   │           │   ├── producers/
-│   │   │   │           │   └── consumers/
-│   │   │   │           └── external/
+│   │   │   │       ├── infrastructure/
+│   │   │   │       │   ├── config/
+│   │   │   │       │   │   └── OpenTelemetryConfig.java
+│   │   │   │       │   ├── persistence/
+│   │   │   │       │   ├── kafka/
+│   │   │   │       │   │   ├── producers/
+│   │   │   │       │   │   └── consumers/
+│   │   │   │       │   ├── external/
+│   │   │   │       │   └── observability/
+│   │   │   │       │       ├── CustomMetrics.java
+│   │   │   │       │       ├── TracingAspect.java
+│   │   │   │       │       └── MetricsService.java
 │   │   │   └── resources/
 │   │   │       ├── application.properties
+│   │   │       ├── otel-collector-config.yaml
 │   │   │       └── avro/
 │   │   │           └── user-events.avsc
 │   │   └── test/
@@ -157,3 +181,33 @@ config/
 └── kafka/
     └── topics.yaml
 ```
+
+## OpenTelemetry Setup for Services
+
+Each service should include the following OpenTelemetry components:
+
+1. **Dependencies in pom.xml**:
+   - OpenTelemetry API and SDK
+   - Auto-instrumentation agents for:
+     - Web frameworks (JAX-RS, Servlet)
+     - Kafka clients
+     - JDBC/Database drivers
+     - HTTP clients
+
+2. **Configuration**:
+   - `OpenTelemetryConfig.java` for SDK setup and exporter configuration
+   - Environment-specific settings in application properties
+
+3. **Custom Instrumentation**:
+   - `TracingAspect.java` for AOP-based method tracing
+   - `CustomMetrics.java` for business-specific metrics
+   - `MetricsService.java` for centralizing metric collection
+
+4. **OpenTelemetry Collector**:
+   - `otel-collector-config.yaml` defining receivers, processors, and exporters
+   - Deployment options for sidecar or centralized collector
+
+5. **Integration Points**:
+   - Trace context propagation across service boundaries
+   - Correlation IDs in logs linked to trace IDs
+   - Health checks exposing telemetry status
