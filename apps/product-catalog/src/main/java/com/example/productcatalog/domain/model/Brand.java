@@ -1,11 +1,20 @@
 package com.example.productcatalog.domain.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
  * Domain model representing a product brand.
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Brand {
     private UUID id;
     private String name;
@@ -15,11 +24,11 @@ public class Brand {
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 
-    // Default constructor
-    public Brand() {
-    }
-
-    // Constructor with required fields
+    /**
+     * Constructor with required fields, auto-generates id and timestamps
+     * 
+     * @param name The name of the brand
+     */
     public Brand(String name) {
         this.id = UUID.randomUUID();
         this.name = name;
@@ -27,76 +36,14 @@ public class Brand {
         this.updatedAt = OffsetDateTime.now();
     }
 
-    // Full constructor
-    public Brand(UUID id, String name, String description, String website, String logoUrl, 
-                 OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.website = website;
-        this.logoUrl = logoUrl;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    // Getters and setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    // Update the brand details and set updated timestamp
+    /**
+     * Update the brand details and set updated timestamp
+     * 
+     * @param name The updated name
+     * @param description The updated description
+     * @param website The updated website
+     * @param logoUrl The updated logo URL
+     */
     public void update(String name, String description, String website, String logoUrl) {
         this.name = name;
         this.description = description;

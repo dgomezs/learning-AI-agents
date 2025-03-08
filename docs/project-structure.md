@@ -42,6 +42,14 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Implement proper error handling
 - Use design patterns where appropriate
 - Keep methods small and focused on a single responsibility
+- Use Project Lombok to reduce boilerplate code:
+  - Use `@Data` for data classes
+  - Use `@Builder` for builder pattern
+  - Use `@Slf4j` for logging
+  - Use `@RequiredArgsConstructor` for dependency injection
+  - Prefer constructor injection with `final` fields
+  - Use `@Value` for immutable classes
+  - Avoid `@ToString` on entity classes to prevent circular references
 
 ## Architecture
 - Follow clean architecture principles
