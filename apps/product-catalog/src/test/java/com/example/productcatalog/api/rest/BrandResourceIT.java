@@ -1,10 +1,10 @@
-package com.example.product.catalog.api.rest;
+package com.example.productcatalog.api.rest;
 
-import com.example.product.catalog.api.rest.dto.CreateBrandRequest;
-import com.example.product.catalog.api.rest.dto.BrandResponse;
-import com.example.product.catalog.domain.model.Brand;
-import com.example.product.catalog.infrastructure.persistence.BrandRepository;
-import com.example.product.catalog.test.containers.PostgresTestContainer;
+import com.example.productcatalog.api.rest.dto.CreateBrandRequest;
+import com.example.productcatalog.api.rest.dto.BrandResponse;
+import com.example.productcatalog.domain.model.Brand;
+import com.example.productcatalog.infrastructure.persistence.BrandRepository;
+import com.example.productcatalog.test.containers.PostgresTestContainer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.security.TestSecurity;
@@ -12,7 +12,7 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
