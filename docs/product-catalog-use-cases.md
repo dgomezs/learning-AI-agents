@@ -2,29 +2,27 @@
 
 This document outlines the detailed use cases for the Product Catalog Service in Gherkin format.
 
-## Feature: Create New Product
+
+## Feature: Create New Brand
 
 ```gherkin
-Feature: Create New Product
+Feature: Create New Brand
   As a Product Manager
-  I want to create new products in draft state
-  So that I can prepare product information before making it publicly available
+  I want to create new brands in the system
+  So that I can associate products with their manufacturers or trademark owners
 
   Background:
     Given I am authenticated as a Product Manager
-    And I have permission to manage products
-    And the Categories  ["Sports", "Tennis"] exists
-    And the Brand "SportMaster" exists
+    And I have permission to manage brands
 
-  Scenario: Successfully create a product with valid information
-    When I submit a new product with the following details:
+  Scenario: Successfully create a brand with valid information
+    When I submit a new brand with the following details:
       | Field       | Value                        |
-      | Name        | "Professional Tennis Racket" |
-      | Description | "High-quality tennis racket" |
-      | Brand       | "SportMaster"                |
-      | SKU         | "TN-RCKT-001"                |
-      | Categories  | ["Sports", "Tennis"]         |
-    Then the system should create a new product in "draft" state
-    And the system should return the newly created product ID
-    And the system should return the product details
-    And the system should emit a "ProductCreated" event
+      | Name        | "SportMaster"                |
+      | Description | "Leading sports equipment manufacturer" |
+      | Website     | "https://sportmaster.com"    |
+      | Logo        | "sportmaster-logo.png"       |
+    Then the system should create a new brand
+    And the system should return the newly created brand ID
+    And the system should return the brand details
+    And the system should emit a "BrandCreated" event

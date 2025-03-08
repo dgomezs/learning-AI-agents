@@ -1,0 +1,111 @@
+asyncapi: 2.6.0
+info:
+  title: Product Catalog Events API
+  version: 1.0.0
+  description: Event-driven API for the Product Catalog Service
+servers:
+  kafka:
+    url: kafka:9092
+    protocol: kafka
+
+channels:
+  product-catalog.brand.events:
+    publish:
+      operationId: publishBrandEvent
+      summary: Channel for brand-related events
+      message:
+        oneOf:
+          - $ref: '#/components/messages/BrandCreatedEvent'
+          - $ref: '#/components/messages/BrandUpdatedEvent'
+          - $ref: '#/components/messages/BrandDeletedEvent'
+
+components:
+  messages:
+    BrandCreatedEvent:
+      name: BrandCreatedEvent
+      title: Brand Created Event
+      summary: Published when a new brand is created
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/CommonEventHeaders'
+      payload:
+        $ref: '#/components/schemas/BrandEventPayload'
+      
+    BrandUpdatedEvent:
+      name: BrandUpdatedEvent
+      title: Brand Updated Event
+      summary: Published when a brand is updated
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/CommonEventHeaders'
+      payload:
+        $ref: '#/components/schemas/BrandEventPayload'
+        
+    BrandDeletedEvent:
+      name: BrandDeletedEvent
+      title: Brand Deleted Event
+      summary: Published when a brand is deleted
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/CommonEventHeaders'
+      payload:
+        type: object
+        required:
+          - brandId
+        properties:
+          brandId:
+            type: string
+            format: uuid
+            description: Unique identifier of the deleted brand
+  
+  schemas:
+    BrandEventPayload:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the brand
+        name:
+          type: string
+          description: Name of the brand
+        description:
+          type: string
+          description: Description of the brand
+        website:
+          type: string
+          format: uri
+          description: Website URL of the brand
+        logoUrl:
+          type: string
+          format: uri
+          description: URL to the brand's logo
+  
+  messageTraits:
+    CommonEventHeaders:
+      headers:
+        type: object
+        properties:
+          eventId:
+            type: string
+            format: uuid
+            description: Unique identifier for the event instance
+          eventType:
+            type: string
+            description: Type of the event
+          eventVersion:
+            type: string
+            description: Version of the event schema
+          source:
+            type: string
+            description: Source system of the event
+          timestamp:
+            type: string
+            format: date-time
+            description: When the event was generated
+          traceId:
+            type: string
+            description: Trace ID for distributed tracing
