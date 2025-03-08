@@ -25,7 +25,7 @@ To get started with this project, follow these steps:
 ## Documentation Structure
 The `docs` folder contains important reference materials and guidelines for the project:
 
-- **project.md**: Contains detailed project instructions for GitHub Copilot, including architecture guidelines, coding standards, and folder structure.
+- **project-structure.md**: Contains detailed project instructions for GitHub Copilot, including architecture guidelines, coding standards, and folder structure.
 - **prompts.md**: Provides example prompts for effectively using GitHub Copilot in your development workflow.
 - **CONTRIBUTING.md**: Guidelines for contributing to the project, including the process for submitting pull requests.
 
@@ -33,21 +33,21 @@ The `docs` folder contains important reference materials and guidelines for the 
 This project is configured to maximize GitHub Copilot's effectiveness:
 
 1. The VS Code settings in `.vscode/settings.json` are configured to reference these documentation files.
-2. Copilot is set up to follow the architectural patterns and coding standards defined in `project.md`.
+2. Copilot is set up to follow the architectural patterns and coding standards defined in `project-structure.md`.
 3. Example prompts in `prompts.md` can help you get the most out of Copilot.
 
 ### Best Practices for Copilot Instructions
 
 #### Project-Level Instructions
 1. **Maintain Detailed Documentation**:
-   - Keep `project.md` updated with the latest architectural decisions
+   - Keep `project-structure.md` updated with the latest architectural decisions
    - Document coding patterns with concrete examples
    - Clearly specify folder structures and naming conventions
 
 2. **Configure VS Code Settings**:
    ```json
    "github.copilot.chat.codeGeneration.instructions": [
-     { "file": "docs/project.md" }
+     { "file": "docs/project-structure.md" }
    ],
    "github.copilot.chat.codeGeneration.useInstructionFiles": true
    ```
@@ -72,11 +72,11 @@ This project is configured to maximize GitHub Copilot's effectiveness:
    - Specify architectural constraints: "Create a repository that follows our clean architecture guidelines"
 
 2. **Reference Documentation**:
-   - "Following the structure in docs/project.md, create a new command class for user registration"
-   - "Using our Kafka consumer pattern documented in project.md, create a listener for order events"
+   - "Following the structure in docs/project-structure.md, create a new command class for user registration"
+   - "Using our Kafka consumer pattern documented in project-structure.md, create a listener for order events"
 
 ## Project Architecture
-The platform follows clean architecture principles with CQRS pattern implementation, as detailed in the `project.md` file. It uses an API-first design approach with OpenAPI specifications and event-driven architecture with Kafka.
+The platform follows clean architecture principles with CQRS pattern implementation, as detailed in the `project-structure.md` file. It uses an API-first design approach with OpenAPI specifications and event-driven architecture with Kafka.
 
 ### Microservices
 - **Product Service**: Manages product catalog and inventory
