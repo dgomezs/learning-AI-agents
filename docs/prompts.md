@@ -20,6 +20,7 @@
 ## Business Logic Services
 
 - Create a comprehensive specification document in the docs folder detailing the Product Catalog Service requirements and functionality.
+- Create me a file under docs for the use cases of the product catalog service
 
 ## Project Setup
 
