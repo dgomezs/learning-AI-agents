@@ -14,6 +14,7 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Quarkus framework
 - RESTful API design with OpenAPI/Swagger
 - Apache Kafka for event streaming
+- AsyncAPI for event-driven API specifications
 - Maven for dependency management
 - JUnit 5 for testing
 - PostgreSQL for database
@@ -24,12 +25,15 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Common configuration in the config folder
 
 ## API-First Design
-- Define APIs using OpenAPI 3.1 specifications before implementation
-- Store API specifications in dedicated `api` folder for each service
-- Generate server stubs and client SDKs from OpenAPI specifications
-- Implement interfaces generated from OpenAPI specs
-- Validate requests against OpenAPI schemas
-- Define API versioning (`v1`, `v2`, etc.) and establish a deprecation policy.
+- Define REST APIs using OpenAPI 3.1 specifications before implementation
+- Define event-driven APIs using AsyncAPI specifications for Kafka interfaces
+- Store API specifications in dedicated folders:
+  - `api/rest` for OpenAPI specs
+  - `api/events` for AsyncAPI specs
+- Generate server stubs, client SDKs, and Kafka producers/consumers from specifications
+- Implement interfaces generated from API specs
+- Validate requests and messages against schemas
+- Define API versioning (`v1`, `v2`, etc.) and establish a deprecation policy
 
 ## Coding Standards
 - Follow Google Java Style Guide
@@ -113,20 +117,68 @@ This is a Java-based monorepo containing multiple microservices. Each service fo
 - Implement graceful degradation (e.g., circuit breakers with Resilience4j)
 - Set up alerts based on error rates and SLOs
 
+## Contract Testing
+- Implement consumer-driven contract testing using Pact
+- Derive contracts from OpenAPI specifications to ensure alignment
+- Each service maintains contracts for dependencies it consumes
+- Provider services verify they meet consumer expectations
+
+### Consumer-Side Contract Testing
+- Define Pact contracts in consumer tests based on expected provider behavior
+- Map OpenAPI schemas to Pact interactions for consistency
+- Generate Pact files during consumer test execution
+- Publish Pact contracts to Pact Broker for sharing with providers
+- Organize contract tests in `src/test/java/<package>/contracts/consumer` directory
+
+### Provider-Side Contract Testing
+- Verify provider compliance with published Pact contracts
+- Use provider state handlers to set up test data for scenarios
+- Implement automated contract verification in CI pipeline
+- Block releases when contracts are broken
+- Organize provider verification tests in `src/test/java/<package>/contracts/provider` directory
+
+### Pact Workflow Integration
+
+- Implement contract testing as part of automated test suite
+- Tag verified contracts with version and environment information
+- Establish matrix of compatibility between service versions
+
+### Contract Testing Guidelines
+- Focus on API boundaries and service interfaces
+- Keep contracts focused on format rather than business logic
+- Use provider states to set up test scenarios
+- Implement version tagging for contract evolution
+- Document breaking changes and provide migration paths
+
+## Event-Driven Architecture with AsyncAPI
+- Define all event interfaces using AsyncAPI specifications
+- Store AsyncAPI specifications in the `api/events` folder for each service
+- Generate Kafka producers and consumers from AsyncAPI specs
+- Validate events against AsyncAPI schemas
+- Use Avro for message serialization with schema registry
+- Implement event versioning and compatibility strategy
+- Document event payload structures and semantics
+- Establish event ownership and responsibility boundaries
+
 ## Example Service Structure
 
 ```
 apps/
 ├── service-a/
 │   ├── api/
-│   │   └── openapi.yaml
+│   │   ├── rest/
+│   │   │   └── openapi.yaml
+│   │   └── events/
+│   │       └── asyncapi.yaml
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/
 │   │   │   │   └── com/example/servicea/
 │   │   │   │       ├── api/
 │   │   │   │       │   ├── rest/
-│   │   │   │       │   └── grpc/
+│   │   │   │       │   └── events/
+│   │   │   │       │       ├── producers/
+│   │   │   │       │       └── consumers/
 │   │   │   │       ├── application/
 │   │   │   │       │   └── usecases/
 │   │   │   │       │       ├── CreateUserCommand.java
@@ -139,7 +191,8 @@ apps/
 │   │   │   │       │   └── services/
 │   │   │   │       ├── infrastructure/
 │   │   │   │       │   ├── config/
-│   │   │   │       │   │   └── OpenTelemetryConfig.java
+│   │   │   │       │   │   ├── OpenTelemetryConfig.java
+│   │   │   │       │   │   └── KafkaConfig.java
 │   │   │   │       │   ├── persistence/
 │   │   │   │       │   ├── kafka/
 │   │   │   │       │   │   ├── producers/
@@ -162,11 +215,30 @@ apps/
 │   │               │   ├── UpdateUserCommandTest.java
 │   │               │   ├── GetUserByIdQueryTest.java
 │   │               │   └── ListUsersQueryTest.java
-│   │               └── adapters/
-│   │                   ├── persistence/
-│   │                   ├── api/
-│   │                   ├── kafka/
-│   │                   └── external/
+│   │               ├── adapters/
+│   │               │   ├── persistence/
+│   │               │   ├── api/
+│   │               │   │   ├── rest/
+│   │               │   │   └── events/
+│   │               │   │       ├── producers/
+│   │               │   │       └── consumers/
+│   │               │   └── external/
+│   │               └── contracts/
+│   │                   ├── consumer/
+│   │                   │   ├── ServiceBContractTest.java
+│   │                   │   └── ServiceCContractTest.java
+│   │                   ├── provider/
+│   │                   │   ├── ProviderStateHandler.java
+│   │                   │   ├── ServiceAContractVerificationTest.java
+│   │                   │   └── pact-verifier.properties
+│   │                   └── schemas/
+│   │                       ├── openapi-to-pact-mappings.json
+│   │                       └── asyncapi-to-pact-mappings.json
+│   ├── pact/
+│   │   ├── consumer/
+│   │   │   └── service-a-service-b.json
+│   │   └── provider/
+│   │       └── service-c-service-a.json
 │   └── pom.xml
 ├── service-b/
 │   └── ...
@@ -175,11 +247,26 @@ apps/
 libs/
 ├── common/
 ├── api-clients/
-└── shared-model/
+│   ├── rest/
+│   └── events/
+├── shared-model/
+├── contract-testing/
+│   ├── openapi-pact-generator/
+│   ├── asyncapi-pact-generator/
+│   └── contract-test-utils/
+└── asyncapi-tools/
+    ├── generators/
+    └── validators/
 config/
 ├── shared-config/
-└── kafka/
-    └── topics.yaml
+├── kafka/
+│   ├── topics.yaml
+│   └── schema-registry.yaml
+├── pact/
+│   ├── broker-config.yml
+│   └── verification-rules.json
+└── asyncapi/
+    └── common-message-library.yaml
 ```
 
 ## OpenTelemetry Setup for Services
@@ -211,3 +298,65 @@ Each service should include the following OpenTelemetry components:
    - Trace context propagation across service boundaries
    - Correlation IDs in logs linked to trace IDs
    - Health checks exposing telemetry status
+
+## Contract Testing Setup for Services
+
+Each service should include the following contract testing components:
+
+1. **Contract Test Organization**:
+   - Consumer contract tests in `src/test/java/<package>/contracts/consumer`
+   - Provider verification tests in `src/test/java/<package>/contracts/provider`
+   - Schema mappings in `src/test/java/<package>/contracts/schemas`
+   - Generated Pact files in the `pact` directory at the service root
+
+2. **Consumer-Side Components**:
+   - Contract test classes for each provider the service depends on
+   - OpenAPI to Pact schema mapping configurations
+   - Utility classes for setting up contract test expectations
+
+3. **Provider-Side Components**:
+   - Provider state handlers to set up test scenarios
+   - Contract verification test configurations
+   - Provider verification properties
+
+4. **Shared Contract Testing Utilities**:
+   - Common utilities in `libs/contract-testing/contract-test-utils`
+   - OpenAPI to Pact converter in `libs/contract-testing/openapi-pact-generator`
+   - Centralized Pact Broker configuration in `config/pact`
+
+5. **Integration with CI/CD**:
+   - Contract verification as part of the build pipeline
+   - Pact Broker integration for storing and retrieving contracts
+   - "Can-I-deploy" checks before service deployment
+
+## AsyncAPI Setup for Event-Driven Interfaces
+
+Each service should include the following AsyncAPI components:
+
+1. **AsyncAPI Specifications**:
+   - AsyncAPI YAML files in the `api/events` directory
+   - Define all events produced and consumed by the service
+   - Include message schemas, channels, and operation bindings
+   - Use semantic versioning for API evolution
+
+2. **Code Generation**:
+   - Generate Kafka producers and consumers from AsyncAPI specs
+   - Create DTOs for event payloads
+   - Generate validation code for messages
+
+3. **Event Structure**:
+   - Define clear event naming conventions
+   - Include metadata in all events (timestamp, source, correlation IDs)
+   - Link event schemas to Avro schemas in schema registry
+   - Implement event versioning strategy
+
+4. **Testing Event Interfaces**:
+   - Write tests for event producers and consumers
+   - Validate events against AsyncAPI schemas
+   - Use Testcontainers for Kafka and schema registry testing
+   - Implement contract tests for event interfaces
+
+5. **Integration with OpenTelemetry**:
+   - Add trace context to event headers
+   - Implement distributed tracing across event producers and consumers
+   - Monitor Kafka metrics through OpenTelemetry
