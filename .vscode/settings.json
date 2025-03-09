@@ -17,22 +17,27 @@
     "github.copilot.chat.codeGeneration.instructions": [
         {
             "file": "docs/coding-guidelines.md",
-        }, {
+        },
+        {
+            "file": "docs/api-guidelines.md",
+        },
+        {
+            "file": "docs/testing-guidelines.md",
+        },
+        {
             "file": "docs/product-catalog/product-catalog-service-models.md",
-        },{
+        },
+        {
             "file": "docs/product-catalog/product-catalog-use-cases.md",
-               
         }
     ],
     "github.copilot.chat.commitMessageGeneration.instructions": [
         "Use conventional commit messages",
         "Provide a detail description of the changes",
         "Use imperative mood in commit messages"
-
     ],
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.compile.nullAnalysis.mode": "automatic",
     "java.debug.settings.onBuildFailureProceed": true
 }
-
