@@ -3,6 +3,7 @@ info:
   title: Product Catalog Events API
   version: 1.0.0
   description: Event-driven API for the Product Catalog Service
+
 servers:
   kafka:
     url: kafka:9092
@@ -16,8 +17,6 @@ channels:
       message:
         oneOf:
           - $ref: '#/components/messages/BrandCreatedEvent'
-          - $ref: '#/components/messages/BrandUpdatedEvent'
-          - $ref: '#/components/messages/BrandDeletedEvent'
 
 components:
   messages:
@@ -26,68 +25,74 @@ components:
       title: Brand Created Event
       summary: Published when a new brand is created
       contentType: application/json
+      schemaFormat: application/schema+json;version=draft-07
+      correlationId:
+        location: $message.header#/correlationId
+        description: Unique identifier correlating related events
       traits:
         - $ref: '#/components/messageTraits/CommonEventHeaders'
       payload:
-        $ref: '#/components/schemas/BrandEventPayload'
-      
-    BrandUpdatedEvent:
-      name: BrandUpdatedEvent
-      title: Brand Updated Event
-      summary: Published when a brand is updated
-      contentType: application/json
-      traits:
-        - $ref: '#/components/messageTraits/CommonEventHeaders'
-      payload:
-        $ref: '#/components/schemas/BrandEventPayload'
-        
-    BrandDeletedEvent:
-      name: BrandDeletedEvent
-      title: Brand Deleted Event
-      summary: Published when a brand is deleted
-      contentType: application/json
-      traits:
-        - $ref: '#/components/messageTraits/CommonEventHeaders'
-      payload:
-        type: object
-        required:
-          - brandId
-        properties:
-          brandId:
-            type: string
-            format: uuid
-            description: Unique identifier of the deleted brand
-  
+        $ref: '#/components/schemas/BrandCreatedPayload'
+      examples:
+        - headers:
+            eventId: "123e4567-e89b-12d3-a456-426614174000"
+            eventType: "BrandCreated"
+            eventVersion: "1.0.0"
+            source: "product-catalog-service"
+            timestamp: "2024-01-20T10:30:00Z"
+            correlationId: "abc123def456"
+            traceId: "xyz789"
+          payload:
+            id: 1
+            name: "SportMaster"
+            description: "Leading sports equipment manufacturer"
+            website: "https://sportmaster.com"
+            logoUrl: "https://sportmaster.com/logo.png"
+
   schemas:
-    BrandEventPayload:
+    BrandCreatedPayload:
       type: object
       required:
         - id
         - name
       properties:
         id:
-          type: string
-          format: uuid
+          type: integer
+          format: int64
           description: Unique identifier of the brand
+          minimum: 1
         name:
           type: string
           description: Name of the brand
+          minLength: 1
+          maxLength: 100
+          pattern: ^[a-zA-Z0-9\s\-_.]+$
         description:
           type: string
           description: Description of the brand
+          maxLength: 1000
         website:
           type: string
           format: uri
           description: Website URL of the brand
+          pattern: ^https?://.*$
         logoUrl:
           type: string
           format: uri
           description: URL to the brand's logo
-  
+          pattern: ^https?://.*$
+
   messageTraits:
     CommonEventHeaders:
       headers:
         type: object
+        required:
+          - eventId
+          - eventType
+          - eventVersion
+          - source
+          - timestamp
+          - correlationId
         properties:
           eventId:
             type: string
@@ -96,9 +101,11 @@ components:
           eventType:
             type: string
             description: Type of the event
+            enum: ["BrandCreated"]
           eventVersion:
             type: string
             description: Version of the event schema
+            pattern: ^\d+\.\d+\.\d+$
           source:
             type: string
             description: Source system of the event
@@ -106,6 +113,9 @@ components:
             type: string
             format: date-time
             description: When the event was generated
+          correlationId:
+            type: string
+            description: ID for correlating related events
           traceId:
             type: string
-            description: Trace ID for distributed tracing
+            description: OpenTelemetry trace ID for distributed tracing

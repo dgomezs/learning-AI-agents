@@ -1,12 +1,15 @@
 package com.example.productcatalog.api.rest.mappers;
 
-import com.example.productcatalog.api.rest.model.BrandResponse;
-import com.example.productcatalog.api.rest.model.CreateBrandRequest;
-import com.example.productcatalog.application.usecases.CreateBrandCommand;
-import jakarta.enterprise.context.ApplicationScoped;
+
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
+import com.example.productcatalog.api.rest.model.BrandResponse;
+import com.example.productcatalog.api.rest.model.CreateBrandRequest;
+import com.example.productcatalog.application.usecases.CreateBrandCommand;
+
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.NonNull;
 
 @ApplicationScoped
@@ -35,15 +38,14 @@ public class BrandMapper {
      * @throws IllegalArgumentException if output is null
      */
     public BrandResponse toResponse(@NonNull CreateBrandCommand.Output output) {
-        return BrandResponse.builder()
+        return new BrandResponse()
                 .id(output.getId())
                 .name(output.getName())
                 .description(output.getDescription())
                 .website(output.getWebsite())
                 .logoUrl(output.getLogoUrl())
                 .createdAt(formatDateTimeUTC(output.getCreatedAt()))
-                .updatedAt(formatDateTimeUTC(output.getUpdatedAt()))
-                .build();
+                .updatedAt(formatDateTimeUTC(output.getUpdatedAt())); 
     }
 
     /**

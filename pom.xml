@@ -12,6 +12,13 @@
     <name>E-Commerce Platform</name>
     <description>A microservices-based e-commerce platform</description>
     
+    <repositories>
+    <repository>
+        <id>jcenter</id>
+        <url>https://jcenter.bintray.com/</url>
+    </repository>
+</repositories>
+
     <properties>
         <java.version>21</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -34,7 +41,6 @@
         <rest-assured.version>5.3.1</rest-assured.version>
         <pact.version>4.5.5</pact.version>
         <mockito.version>5.6.0</mockito.version>
-        <cdi-api.version>2.0</cdi-api.version>
         
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -133,6 +139,7 @@
             <artifactId>cdi-api</artifactId>
             <version>${cdi-api.version}</version>
         </dependency>
+            
         </dependencies>
     </dependencyManagement>
     

@@ -11,6 +11,7 @@
   - Never modify generated code directly; update the OpenAPI spec instead
   - Regenerate models whenever OpenAPI specs change
 - **Generate Request/Response DTOs from OpenAPI specifications:**
+  - Use OpenAPI 3.0.0
   - Use OpenAPI Generator Maven plugin to generate model classes from API specs
   - Configure in pom.xml to run during build phase
   - Generated code must be placed in `target/generated-sources`
@@ -18,6 +19,13 @@
   - Generate controller interfaces in `com.example.<service>.api.rest` package
   - Never modify generated code directly; update the OpenAPI spec instead
   - Regenerate models whenever OpenAPI specs change
+- **Generate Event Classes from AsyncAPI specifications:**
+  - Use AsyncAPI Generator Maven plugin to generate event classes
+  - Configure generation in pom.xml to run during build phase
+  - Generated code must be placed in `target/generated-sources`
+  - Never modify generated event classes directly; update AsyncAPI spec instead
+  - Don't include versions in the event name. Use headers  
+  - Event classes should include serialization configuration for Kafka
 - **Controller implementation:**
   - Implement controller interfaces generated from OpenAPI specs
   - Use the generated Request/Response classes in controller implementations

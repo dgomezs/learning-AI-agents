@@ -78,6 +78,12 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
+
+        <!-- Quarkus CDI -->
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-arc</artifactId>
+</dependency>
         
         <!-- Testing -->
         <dependency>
@@ -127,10 +133,7 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>    
-        </dependency>
+        
     </dependencies>
 
     <build>
@@ -150,66 +153,95 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>                
             </plugin>
-            <!-- OpenAPI Generator plugin -->
             <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>6.6.0</version>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>6.6.0</version>
+    <executions>
+        <execution>
+            <id>generate-api</id>
+            <phase>generate-sources</phase>  <!-- Ensures it runs before compilation -->
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${project.basedir}/api/rest/openapi.yaml</inputSpec>
+                <generatorName>jaxrs-spec</generatorName>
+                <apiPackage>com.example.productcatalog.api.rest</apiPackage>
+                <modelPackage>com.example.productcatalog.api.rest.model</modelPackage>
+                <output>${project.build.directory}/generated-sources/openapi</output>
+                <configOptions>
+                    <useJakartaEe>true</useJakartaEe>
+                    <dateLibrary>java8</dateLibrary>
+                    <supportAsync>true</supportAsync>
+                    <useLombokAnnotations>true</useLombokAnnotations>
+                    <interfaceOnly>true</interfaceOnly>  <!-- Avoids full implementation conflicts -->
+                    <returnResponse>true</returnResponse> <!-- Uses Response type for better API control -->
+                    <useSwaggerAnnotations>false</useSwaggerAnnotations> <!-- OpenAPI annotations not needed in Quarkus -->
+                    <useOptional>true</useOptional>  <!-- Ensures null safety -->
+                    <openApiNullable>false</openApiNullable> <!-- Disables unnecessary nullable annotations -->
+                    <useBeanValidation>true</useBeanValidation> <!-- Enables JSR-303 validations -->
+                </configOptions>
+                <generateApiTests>false</generateApiTests>
+                <generateModelTests>false</generateModelTests>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
+
+            <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>exec-maven-plugin</artifactId>
+    <version>3.1.0</version>
+    <executions>
+        <execution>
+            <id>generate-asyncapi-events</id>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>exec</goal>
+            </goals>
+           <configuration>
+                <executable>asyncapi</executable>  <!-- Using asyncapi CLI -->
+                <arguments>
+                    <argument>generate</argument>
+                    <argument>fromTemplate</argument>
+                    <argument>${project.basedir}/api/events/asyncapi.yaml</argument>
+                    <argument>-o</argument>
+                    <argument>${project.build.directory}/generated-sources/asyncapi</argument>                
+
+                    <argument>@asyncapi/java-spring-cloud-stream-template</argument>
+                    <argument>-partifactType=library</argument>                    
+                    <argument>-pjavaPackage=com.example.productcatalog.api.events</argument>
+                </arguments>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
+            
+            <!-- Add source directory for generated code -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>generate-api</id>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>add-source</goal>
                         </goals>
                         <configuration>
-    <inputSpec>${project.basedir}/api/rest/openapi.yaml</inputSpec>
-    <generatorName>jaxrs-spec</generatorName>
-    <apiPackage>com.example.productcatalog.api.rest</apiPackage>
-    <modelPackage>com.example.productcatalog.api.rest.model</modelPackage>
-    <generateApiTests>false</generateApiTests>
-    <generateModelTests>false</generateModelTests>
-    <output>${project.build.directory}/generated-sources</output>
-    <configOptions>
-        <sourceFolder>src/gen/java</sourceFolder>
-        
-        <!-- Use Jakarta EE for Quarkus -->
-        <useJakartaEe>true</useJakartaEe>
-        
-        <!-- Java 8 Date/Time library (Good for Quarkus) -->
-        <dateLibrary>java8</dateLibrary>
-        
-        <!-- Generate interfaces only (avoid implementation conflicts) -->
-        <interfaceOnly>true</interfaceOnly>
-
-        <!-- Use Response type for better API control in Quarkus -->
-        <returnResponse>true</returnResponse>
-        
-        <!-- OpenAPI annotations are not required in Quarkus -->
-        <useSwaggerAnnotations>false</useSwaggerAnnotations>
-        
-        <!-- Use Lombok to reduce boilerplate -->
-        <additionalModelTypeAnnotations>@lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
-
-        <!-- Avoid blocking APIs unless needed -->
-        <supportAsync>true</supportAsync>
-
-        <!-- Avoid implicit headers in API methods -->
-        <implicitHeaders>false</implicitHeaders>
-
-        <!-- Use Optional for null safety (good practice for Quarkus) -->
-        <useOptional>true</useOptional>
-
-        <!-- Disable OpenAPI nullable (Quarkus doesn't need it) -->
-        <openApiNullable>false</openApiNullable>
-
-        <!-- Generate API interfaces with @Path annotation -->
-        <useBeanValidation>true</useBeanValidation>
-    </configOptions>
-</configuration>
-
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/asyncapi</source>
+                                <source>${project.build.directory}/generated-sources/openapi</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+        
     </build>
+    
 </project>

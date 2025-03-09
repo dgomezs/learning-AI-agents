@@ -22,6 +22,13 @@ paths:
       responses:
         '201':
           description: Brand created successfully
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL of the newly created brand
+              example: '/api/v1/brands/1234'
           content:
             application/json:
               schema:
@@ -32,6 +39,21 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                type: 'https://api.product-catalog.com/problems/validation-error'
+                title: 'Validation Error'
+                status: 400
+                detail: 'The request contains invalid parameters'
+                timestamp: '2024-01-20T10:30:00Z'
+                path: '/api/v1/brands'
+                instance: '/problems/12345'
+                validationErrors: [
+                  {
+                    field: 'name',
+                    message: 'must not be empty',
+                    rejectedValue: ''
+                  }
+                ]
         '401':
           description: Unauthorized
           content:
@@ -51,12 +73,16 @@ components:
       type: object
       required:
         - name
+        - website
+        - logoUrl
       properties:
         name:
           type: string
           description: Brand name
           example: 'SportMaster'
+          minLength: 1
           maxLength: 100
+          pattern: '^[a-zA-Z0-9\s\-]+$'
         description:
           type: string
           description: Brand description
@@ -68,12 +94,15 @@ components:
           description: Brand website URL
           example: 'https://sportmaster.com'
           maxLength: 255
+          pattern: '^https?://.*'
         logoUrl:
           type: string
           format: uri
           description: URL to the brand logo image
           example: 'https://sportmaster.com/images/logo.png'
           maxLength: 255
+          pattern: '^https?://.*'
+      additionalProperties: false
 
     BrandResponse:
       type: object
@@ -137,20 +166,24 @@ components:
         type:
           type: string
           description: A URI reference that identifies the problem type
-          example: 'https://api.product-catalog.com/errors/validation-error'
           format: uri
+          example: 'https://api.product-catalog.com/problems/validation-error'
         title:
           type: string
           description: A short, human-readable summary of the problem type
           example: 'Validation Error'
+          maxLength: 100
         status:
           type: integer
           description: The HTTP status code
+          minimum: 100
+          maximum: 599
           example: 400
         detail:
           type: string
           description: A human-readable explanation specific to this occurrence of the problem
           example: 'Brand name must not be empty and must be less than 100 characters'
+          maxLength: 500
         timestamp:
           type: string
           format: date-time
@@ -160,11 +193,13 @@ components:
           type: string
           description: The request path that caused the error
           example: '/api/v1/brands'
+          maxLength: 255
         instance:
           type: string
           description: A URI reference that identifies the specific occurrence of the problem
-          example: '/errors/12345'
           format: uri
+          example: '/problems/12345'
+          maxLength: 255
         validationErrors:
           type: array
           description: List of field-level validation errors
@@ -178,11 +213,16 @@ components:
                 type: string
                 description: The field that failed validation
                 example: 'name'
+                maxLength: 100
               message:
                 type: string
                 description: The validation error message
                 example: 'must not be empty'
+                maxLength: 200
               rejectedValue:
                 type: string
                 description: The value that was rejected
                 example: ''
+                maxLength: 500
+            additionalProperties: false
+      additionalProperties: false

@@ -1,10 +1,10 @@
 package com.example.productcatalog.application.usecases;
 
-import com.example.productcatalog.domain.events.BrandCreatedEvent;
+
 import com.example.productcatalog.domain.model.Brand;
 import com.example.productcatalog.infrastructure.events.EventPublisher;
 import com.example.productcatalog.infrastructure.persistence.BrandRepository;
-
+import com.example.productcatalog.api.events.BrandCreatedPayload;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -30,7 +30,7 @@ public class CreateBrandCommand {
         brandRepository.persist(brand);
         Brand savedBrand = brandRepository.findById(brand.getId());
 
-        eventPublisher.publish(new BrandCreatedEvent(
+        eventPublisher.publish(new BrandCreatedPayload(
                 savedBrand.getId(),
                 savedBrand.getName(),
                 savedBrand.getDescription(),
