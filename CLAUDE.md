@@ -85,6 +85,12 @@ config/                       # Shared configuration
 - Organized by type: `tables/`, `sequences/`, `constraints/`, `indexes/`
 - Naming: `YYYYMMDDHHMMSS_description.xml`
 
+### Maven Dependency Management
+- **All plugin and library versions must be defined in the root `pom.xml`**
+- Child modules should inherit versions from parent POM to ensure consistency
+- Never specify versions directly in child module POMs unless absolutely necessary
+- Use `<dependencyManagement>` and `<pluginManagement>` sections in root POM
+
 ## Important Development Notes
 
 ### Service Documentation and Code Generation
