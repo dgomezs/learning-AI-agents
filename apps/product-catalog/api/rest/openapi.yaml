@@ -4,8 +4,10 @@ info:
   description: API for managing product catalog
   version: 1.0.0  
 servers:
-  - url: https://example.com/api/v1
+  - url: http://localhost:8080/api/v1
     description: Local development server
+  - url: https://api-staging.product-catalog.com/api/v1
+    description: Staging environment
 paths:
   /brands:
     post:
@@ -84,10 +86,34 @@ components:
           maxLength: 100
           pattern: '^[a-zA-Z0-9\s\-]+$'
         description:
-          type: string
-          description: Brand description
-          example: 'Leading sports equipment manufacturer'
-          maxLength: 500
+          oneOf:
+            - type: string
+              description: Plain text description
+              example: 'Leading sports equipment manufacturer'
+              maxLength: 500
+            - type: object
+              description: Rich text description with internationalization support
+              properties:
+                content:
+                  type: string
+                  description: Description content
+                  example: 'Leading sports equipment manufacturer'
+                  maxLength: 500
+                format:
+                  type: string
+                  description: Content format
+                  enum: [plain, markdown, html]
+                  default: plain
+                  example: plain
+                locale:
+                  type: string
+                  description: Language locale (ISO 639-1)
+                  pattern: '^[a-z]{2}(-[A-Z]{2})?$'
+                  example: 'en-US'
+                  default: 'en'
+              required:
+                - content
+              additionalProperties: false
         website:
           type: string
           format: uri
@@ -98,10 +124,10 @@ components:
         logoUrl:
           type: string
           format: uri
-          description: URL to the brand logo image
-          example: 'https://sportmaster.com/images/logo.png'
+          description: URL to the brand logo image (absolute URL or relative path)
+          example: 'sportmaster-logo.png'
           maxLength: 255
-          pattern: '^https?://.*'
+          pattern: '^(https?://.*|[^/].*)'
       additionalProperties: false
 
     BrandResponse:
@@ -126,10 +152,34 @@ components:
           example: 'SportMaster'
           maxLength: 100
         description:
-          type: string
-          description: Brand description
-          example: 'Leading sports equipment manufacturer'
-          maxLength: 500
+          oneOf:
+            - type: string
+              description: Plain text description
+              example: 'Leading sports equipment manufacturer'
+              maxLength: 500
+            - type: object
+              description: Rich text description with internationalization support
+              properties:
+                content:
+                  type: string
+                  description: Description content
+                  example: 'Leading sports equipment manufacturer'
+                  maxLength: 500
+                format:
+                  type: string
+                  description: Content format
+                  enum: [plain, markdown, html]
+                  default: plain
+                  example: plain
+                locale:
+                  type: string
+                  description: Language locale (ISO 639-1)
+                  pattern: '^[a-z]{2}(-[A-Z]{2})?$'
+                  example: 'en-US'
+                  default: 'en'
+              required:
+                - content
+              additionalProperties: false
         website:
           type: string
           format: uri
@@ -139,8 +189,8 @@ components:
         logoUrl:
           type: string
           format: uri
-          description: URL to the brand logo image
-          example: 'https://sportmaster.com/images/logo.png'
+          description: URL to the brand logo image (absolute URL or relative path)
+          example: 'sportmaster-logo.png'
           maxLength: 255
         createdAt:
           type: string

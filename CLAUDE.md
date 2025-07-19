@@ -37,6 +37,9 @@ apps/                          # Microservices
 ├── product-catalog/          # Product catalog service
 │   ├── api/rest/openapi.yaml # REST API specification
 │   ├── api/events/asyncapi.yaml # Event specification
+│   ├── docs/                 # Service-specific documentation
+│   │   ├── *-models.md       # Domain model specifications (can be multiple files)
+│   │   └── *-use-cases.md    # Use cases in Gherkin format (can be multiple files)
 │   └── src/main/java/com/example/productcatalog/
 │       ├── api/rest/         # REST controllers (generated + implemented)
 │       ├── application/usecases/ # Commands and Queries
@@ -84,10 +87,24 @@ config/                       # Shared configuration
 
 ## Important Development Notes
 
+### Service Documentation and Code Generation
+- **Service Documentation**: Each service in `apps/` contains a `docs/` folder with specifications
+  - `*-models.md`: Domain model specifications defining entities and their properties (multiple files allowed)
+  - `*-use-cases.md`: Use cases written in Gherkin format describing business scenarios (multiple files allowed)
+  - These documents are the **single source of truth** for implementing business logic
+  - **ALWAYS review ALL documentation files** in the service's `docs/` folder before implementing features or APIs
+  - OpenAPI and AsyncAPI specifications should align with these domain specifications
+
 ### OpenAPI Code Generation
 - REST API models are generated from `api/rest/openapi.yaml`
 - Generated code in `target/generated-sources/openapi/`
 - Implement generated interfaces in `api/rest/` package
+- **Follow API design standards in `docs/api-guidelines.md`**:
+  - Use RFC 7807 Problem Details for error responses
+  - Follow Zalando RESTful API Guidelines
+  - Use camelCase for JSON properties
+  - Use hyphen-case for URIs
+  - Include proper HTTP status codes and validation
 
 ### Event-Driven Architecture
 - AsyncAPI specs define event contracts in `api/events/asyncapi.yaml`
