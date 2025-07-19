@@ -109,3 +109,30 @@ config/                       # Shared configuration
 4. Add infrastructure implementations
 5. Write comprehensive tests with full mock verification
 6. Run `mvn clean verify` before committing
+7. Follow Conventional Commits format for commit messages
+
+### Commit Message Format
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types**:
+- `feat`: new feature
+- `fix`: bug fix
+- `docs`: documentation changes
+- `style`: formatting, missing semicolons, etc.
+- `refactor`: code changes that neither fix bugs nor add features
+- `test`: adding or modifying tests
+- `chore`: maintenance tasks, dependency updates, etc.
+
+**Examples**:
+- `feat(product-catalog): add brand creation endpoint`
+- `fix(auth): resolve token validation issue`
+- `docs: update API documentation for user service`
+- `test(brand): add integration tests for brand repository`
