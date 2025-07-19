@@ -1,7 +1,7 @@
 # E-Commerce Platform Documentation
 
 ## Overview
-This project is an e-commerce platform built within a Java-based monorepo containing multiple microservices. It demonstrates the use of GitHub Copilot for developing a complex, real-world application.
+This project is an e-commerce platform built within a Java-based monorepo containing multiple microservices. It serves as a learning and evaluation platform for AI agents in software development, demonstrating how various AI tools can assist in developing complex, real-world applications.
 
 ## Functionality
 The platform provides the following key features:
@@ -25,18 +25,19 @@ To get started with this project, follow these steps:
 ## Documentation Structure
 The `docs` folder contains important reference materials and guidelines for the project:
 
-- **coding-guidelines.md**: Contains detailed project instructions for GitHub Copilot, including architecture guidelines, coding standards, and folder structure.
-- **prompts.md**: Provides example prompts for effectively using GitHub Copilot in your development workflow.
+- **coding-guidelines.md**: Contains detailed project instructions for AI agents, including architecture guidelines, coding standards, and folder structure.
+- **prompts.md**: Provides example prompts for effectively using AI agents in your development workflow.
 - **CONTRIBUTING.md**: Guidelines for contributing to the project, including the process for submitting pull requests.
 
-## Using GitHub Copilot with This Project
-This project is configured to maximize GitHub Copilot's effectiveness:
+## Using AI Agents with This Project
+This project is configured to maximize AI agent effectiveness across different tools:
 
 1. The VS Code settings in `.vscode/settings.json` are configured to reference these documentation files.
-2. Copilot is set up to follow the architectural patterns and coding standards defined in `coding-guidelines.md`.
-3. Example prompts in `prompts.md` can help you get the most out of Copilot.
+2. AI agents can follow the architectural patterns and coding standards defined in `coding-guidelines.md`.
+3. Example prompts in `prompts.md` can help you get the most out of various AI development tools.
+4. The `CLAUDE.md` file provides specific guidance for Claude Code when working in this repository.
 
-### Best Practices for Copilot Instructions
+### Best Practices for AI Agent Instructions
 
 #### Project-Level Instructions
 1. **Maintain Detailed Documentation**:
